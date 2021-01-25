@@ -13,41 +13,34 @@ using System.Text.RegularExpressions;
 
 // API: https://googleapis.dev/dotnet/Google.Apis.Gmail.v1/latest/api/Google.Apis.Gmail.v1.html
 // TODO
-// Label argument for getThreads()
+// Label argument for getThreads(), labels are included in each (gmail) Message object
 // WebSockets
 // Testing framework
 // Entity-Model-Controller...
 
 
 // Labels:
-// CHAT
-// SENT
-// INBOX
-// IMPORTANT
-// TRASH
-// DRAFT
-// SPAM
-// CATEGORY_FORUMS
-// CATEGORY_UPDATES
-// CATEGORY_PERSONAL
-// CATEGORY_PROMOTIONS
-// CATEGORY_SOCIAL
-// STARRED
-// UNREAD
 namespace Gmail
 {
+
     public interface IGmailAPI<T>
     // Let the GmailAPI class inherit from the interface
     {
-        IList<T[]> getThreads(string userId, string label);
+        IList<T[]> getThreads(string userId);
     }
 
     public class GmailAPI : IGmailAPI<EmailMessage>
     {
+        
+        public static readonly string[] scopes = { 
+            GmailService.Scope.GmailReadonly, 
+            GmailService.Scope.MailGoogleCom, 
+            GmailService.Scope.GmailModify 
+        };
+            
         public const string tokenPath = "./secret/token";
         public const string credPath = "./secret/credentials.json";
         private GmailService service;
-        private string[] scopes;
         private UserCredential credentials;
         
         //**********************************************//
@@ -55,7 +48,6 @@ namespace Gmail
         {
             // Open a browser session to authenticate with the app if no tokens.json directory exists
             this.setupCredentials();
-            this.scopes = scopes; 
             
             // Create Gmail API service.
             this.service = new GmailService(new BaseClientService.Initializer()
@@ -78,7 +70,7 @@ namespace Gmail
                     // will be done server side
                     this.credentials = GoogleWebAuthorizationBroker.AuthorizeAsync(
                         GoogleClientSecrets.Load(stream).Secrets,
-                        scopes,
+                        GmailAPI.scopes,
                         "user",
                         System.Threading.CancellationToken.None,
                         new FileDataStore(GmailAPI.tokenPath, true)).Result;
@@ -98,13 +90,13 @@ namespace Gmail
                     .Replace("-", "+");
             return Convert.FromBase64String(s);
         }
-        public IList<EmailMessage[]> getThreads(string userId, string label)
-        // Return a list of EmailMessage arrays (one per Threed)
-        // [ 
-        //  [ { Subject, Sender, Date, Body }, {...} ],
-        //  [...]
-        // ]
+        public IList<EmailMessage[]> getThreads(string userId)
         {
+            // Return a list of EmailMessage arrays (one per Threed)
+            // [ 
+            //  [ { Subject, Sender, Date, Body }, {...} ],
+            //  [...]
+            // ]
             EmailMessage[] threadMessages;
             MessagePartHeader[] headers;
             IList<Message> gmailThreadMessages;
@@ -192,30 +184,6 @@ namespace Gmail
             
             return threads;
         }
-        
-        public void printLabels()
-        {
-            // Define parameters of request.
-            UsersResource.LabelsResource.ListRequest request = this.service.Users.Labels.List("me");
-
-            // List labels.
-            IList<Label> labels = request.Execute().Labels;
-            Console.WriteLine("Labels:");
-            if (labels != null && labels.Count > 0)
-            {
-                foreach (var labelItem in labels)
-                {
-                    Console.WriteLine("{0}", labelItem.Name);
-                }
-            }
-            else
-            {
-                Console.WriteLine("No labels found.");
-            }
-            Console.Read();
-        }
-
-
     }
         
 }

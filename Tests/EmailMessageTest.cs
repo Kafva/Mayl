@@ -1,5 +1,4 @@
 using Xunit;
-using Gmail;
 
 namespace Gmail.UnitTests
 {

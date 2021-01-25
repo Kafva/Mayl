@@ -26,7 +26,7 @@ namespace Web
             //  * Singleton objects are the same for every object and every request. 
             
             services.AddSingleton<IGmailAPI<EmailMessage>, GmailAPI>( 
-                _ => new GmailAPI(Program.applicationName, Program.scopes)
+                _ => new GmailAPI(Program.applicationName, GmailAPI.scopes)
             );
             
             services.AddRazorPages();

@@ -6,7 +6,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <!-- Note that we need to exclude the gmailAPI/obj directory
     from the build process -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;misc/**;GmailAPI/**;Tests/**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;misc/**;GmailAPI/**;Tests/**;ConsoleDebug/**</DefaultItemExcludes>
   </PropertyGroup>
   
   <ItemGroup>

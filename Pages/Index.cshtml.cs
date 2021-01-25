@@ -24,7 +24,7 @@ namespace Mayler.Pages
             var services = HttpContext.RequestServices;
             var gmailAPI = (IGmailAPI<EmailMessage>)services.GetService(typeof(IGmailAPI<EmailMessage>)); 
             
-            var threads = gmailAPI.getThreads("me","INBOX");
+            var threads = gmailAPI.getThreads("me");
             Console.WriteLine(threads[0][0].subject);
         }
     }

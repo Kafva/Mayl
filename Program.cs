@@ -7,20 +7,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Google.Apis.Gmail.v1;
+using Gmail;
 
 namespace Web
 {
     public class Program
     {
         public const string applicationName = "Mayler";
-        public static readonly string[] scopes = { 
-            GmailService.Scope.GmailReadonly, 
-            GmailService.Scope.MailGoogleCom, 
-            GmailService.Scope.GmailModify 
-        };
 
         public static void Main(string[] args)
-        {
+        {   
             CreateHostBuilder(args).Build().Run();
         }
 

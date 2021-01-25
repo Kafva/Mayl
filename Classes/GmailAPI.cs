@@ -11,10 +11,31 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.WebUtilities;
 
 // API: https://googleapis.dev/dotnet/Google.Apis.Gmail.v1/latest/api/Google.Apis.Gmail.v1.html
+// Labels:
+// CHAT
+// SENT
+// INBOX
+// IMPORTANT
+// TRASH
+// DRAFT
+// SPAM
+// CATEGORY_FORUMS
+// CATEGORY_UPDATES
+// CATEGORY_PERSONAL
+// CATEGORY_PROMOTIONS
+// CATEGORY_SOCIAL
+// STARRED
+// UNREAD
 
-class GmailAPI
+public interface IGmailAPI<T>
+// Let the GmailAPI class inherit from the interface
 {
-    public const string tokenPath = "./secret/token.json";
+    IList<T[]> getThreads(string userId, string label);
+}
+
+class GmailAPI : IGmailAPI<EmailMessage>
+{
+    public const string tokenPath = "./secret/token";
     public const string credPath = "./secret/credentials.json";
     private GmailService service;
     private string[] scopes;
@@ -57,29 +78,8 @@ class GmailAPI
         else { Console.WriteLine("Using existing credentials at " + GmailAPI.tokenPath); }
     }
 
-    public void printLabels()
-    {
-        // Define parameters of request.
-        UsersResource.LabelsResource.ListRequest request = this.service.Users.Labels.List("me");
 
-        // List labels.
-        IList<Label> labels = request.Execute().Labels;
-        Console.WriteLine("Labels:");
-        if (labels != null && labels.Count > 0)
-        {
-            foreach (var labelItem in labels)
-            {
-                Console.WriteLine("{0}", labelItem.Name);
-            }
-        }
-        else
-        {
-            Console.WriteLine("No labels found.");
-        }
-        Console.Read();
-    }
-    
-    public IList<EmailMessage[]> getThreads(string userId)
+    public IList<EmailMessage[]> getThreads(string userId, string label)
     // Return a list of EmailMessage arrays (one per Threed)
     // [ 
     //  [ { Subject, Sender, Date, Body }, {...} ],
@@ -170,4 +170,28 @@ class GmailAPI
         
         return threads;
     }
+    
+    public void printLabels()
+    {
+        // Define parameters of request.
+        UsersResource.LabelsResource.ListRequest request = this.service.Users.Labels.List("me");
+
+        // List labels.
+        IList<Label> labels = request.Execute().Labels;
+        Console.WriteLine("Labels:");
+        if (labels != null && labels.Count > 0)
+        {
+            foreach (var labelItem in labels)
+            {
+                Console.WriteLine("{0}", labelItem.Name);
+            }
+        }
+        else
+        {
+            Console.WriteLine("No labels found.");
+        }
+        Console.Read();
+    }
+
+
 }

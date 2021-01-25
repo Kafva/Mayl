@@ -3,7 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <DefaultItemExcludes>misc/**;$(DefaultItemExcludes)</DefaultItemExcludes>
+    <!-- Note that we must exclude the objs directory of
+    the classes library to avoid duplication in the build process -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;misc/**;Classes/obj/**;</DefaultItemExcludes>
   </PropertyGroup>
   
   <ItemGroup>

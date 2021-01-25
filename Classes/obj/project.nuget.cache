@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "Y6aNsgCOp9mOqrosAoDAUiC1I7RcdiTm0M1iZ16kTr7b8BFwf5vFozT3bkstJDHyaQvEEhq+9Jr3aeaSYbgC+w==",
+  "success": true,
+  "projectFilePath": "/Users/jonas/XcodeX/Pparker/Mayler/Classes/Classes.csproj",
+  "expectedPackageFiles": [
+    "/Users/jonas/.nuget/packages/google.apis/1.49.0/google.apis.1.49.0.nupkg.sha512",
+    "/Users/jonas/.nuget/packages/google.apis.auth/1.49.0/google.apis.auth.1.49.0.nupkg.sha512",
+    "/Users/jonas/.nuget/packages/google.apis.core/1.49.0/google.apis.core.1.49.0.nupkg.sha512",
+    "/Users/jonas/.nuget/packages/google.apis.gmail.v1/1.49.0.2202/google.apis.gmail.v1.1.49.0.2202.nupkg.sha512",
+    "/Users/jonas/.nuget/packages/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

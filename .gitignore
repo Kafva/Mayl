@@ -27,3 +27,5 @@ bin/*
 secret/*
 misc/*
 obj/Debug/*
+*/obj/*
+*/bin/*

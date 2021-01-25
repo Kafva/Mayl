@@ -24,8 +24,8 @@ Cargo.lock
 *.diff
 *.rej
 bin/*
+*/bin/*
 secret/*
 misc/*
-obj/Debug/*
+obj/*
 */obj/*
-*/bin/*

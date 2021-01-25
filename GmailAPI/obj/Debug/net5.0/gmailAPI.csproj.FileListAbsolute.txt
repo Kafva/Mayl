@@ -1,0 +1,12 @@
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/bin/Debug/net5.0/GmailAPI.deps.json
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/bin/Debug/net5.0/GmailAPI.dll
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/bin/Debug/net5.0/ref/GmailAPI.dll
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/bin/Debug/net5.0/GmailAPI.pdb
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/obj/Debug/net5.0/GmailAPI.csprojAssemblyReference.cache
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/obj/Debug/net5.0/GmailAPI.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/obj/Debug/net5.0/GmailAPI.AssemblyInfoInputs.cache
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/obj/Debug/net5.0/GmailAPI.AssemblyInfo.cs
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/obj/Debug/net5.0/GmailAPI.csproj.CoreCompileInputs.cache
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/obj/Debug/net5.0/GmailAPI.dll
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/obj/Debug/net5.0/ref/GmailAPI.dll
+/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/obj/Debug/net5.0/GmailAPI.pdb

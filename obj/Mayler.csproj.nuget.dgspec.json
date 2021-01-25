@@ -4,14 +4,14 @@
     "/Users/jonas/XcodeX/Pparker/Mayler/Mayler.csproj": {}
   },
   "projects": {
-    "/Users/jonas/XcodeX/Pparker/Mayler/Mayler.csproj": {
+    "/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/GmailAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/jonas/XcodeX/Pparker/Mayler/Mayler.csproj",
-        "projectName": "Mayler",
-        "projectPath": "/Users/jonas/XcodeX/Pparker/Mayler/Mayler.csproj",
+        "projectUniqueName": "/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/GmailAPI.csproj",
+        "projectName": "GmailAPI",
+        "projectPath": "/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/GmailAPI.csproj",
         "packagesPath": "/Users/jonas/.nuget/packages/",
-        "outputPath": "/Users/jonas/XcodeX/Pparker/Mayler/obj/",
+        "outputPath": "/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/obj/",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
@@ -46,6 +46,65 @@
               "version": "[1.49.0.2202, )"
             }
           },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.102/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/jonas/XcodeX/Pparker/Mayler/Mayler.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/jonas/XcodeX/Pparker/Mayler/Mayler.csproj",
+        "projectName": "Mayler",
+        "projectPath": "/Users/jonas/XcodeX/Pparker/Mayler/Mayler.csproj",
+        "packagesPath": "/Users/jonas/.nuget/packages/",
+        "outputPath": "/Users/jonas/XcodeX/Pparker/Mayler/obj/",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "/Users/jonas/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/GmailAPI.csproj": {
+                "projectPath": "/Users/jonas/XcodeX/Pparker/Mayler/GmailAPI/GmailAPI.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
           "imports": [
             "net461",
             "net462",

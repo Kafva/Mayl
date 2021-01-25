@@ -1,15 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
+  
+  
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <!-- Note that we must exclude the objs directory of
-    the classes library to avoid duplication in the build process -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;misc/**;Classes/obj/**;</DefaultItemExcludes>
+    <!-- Note that we need to exclude the gmailAPI/obj directory
+    from the build process -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;misc/**;GmailAPI/**;Tests/**</DefaultItemExcludes>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="google.apis.gmail.v1" Version="1.49.0.2202" />
+	  <ProjectReference Include="./GmailAPI/GmailAPI.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,12 @@
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/bin/Debug/net5.0/gmailAPI.deps.json
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/bin/Debug/net5.0/gmailAPI.dll
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/bin/Debug/net5.0/ref/gmailAPI.dll
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/bin/Debug/net5.0/gmailAPI.pdb
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/obj/Debug/net5.0/gmailAPI.csprojAssemblyReference.cache
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/obj/Debug/net5.0/gmailAPI.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/obj/Debug/net5.0/gmailAPI.AssemblyInfoInputs.cache
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/obj/Debug/net5.0/gmailAPI.AssemblyInfo.cs
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/obj/Debug/net5.0/gmailAPI.csproj.CoreCompileInputs.cache
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/obj/Debug/net5.0/gmailAPI.dll
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/obj/Debug/net5.0/ref/gmailAPI.dll
+/Users/jonas/XcodeX/Pparker/Mayler/gmailAPI/obj/Debug/net5.0/gmailAPI.pdb

@@ -26,6 +26,6 @@ Cargo.lock
 bin/*
 */bin/*
 secret/*
-misc/*
+untracked/*
 obj/*
 */obj/*

@@ -1,3 +1,4 @@
+#define _DEBUG
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
@@ -5,31 +6,20 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Text.RegularExpressions;
-//using Microsoft.AspNetCore.WebUtilities;
+using System.Threading.Tasks;
 
-
-// API: https://googleapis.dev/dotnet/Google.Apis.Gmail.v1/latest/api/Google.Apis.Gmail.v1.html
-// TODO
-// Label argument for getThreads(), labels are included in each (gmail) Message object
-// WebSockets
-// Testing framework
-// Entity-Model-Controller...
-
-
-// Labels:
 namespace Gmail
 {
-
     public interface IGmailAPI<T>
     // Let the GmailAPI class inherit from the interface
     {
-        IList<T[]> getThreads(string userId);
+        List<T> getThreadsFromLabel(string userId, string label, bool fetchBody=true);
+        public EmailMessage[] fetchThreadMessages(string userId, string threadId, bool fetchBody=true);
     }
 
-    public class GmailAPI : IGmailAPI<EmailMessage>
+    public class GmailAPI : IGmailAPI<EmailThread>
     {
         
         public static readonly string[] scopes = { 
@@ -38,8 +28,9 @@ namespace Gmail
             GmailService.Scope.GmailModify 
         };
             
-        public const string tokenPath = "./secret/token";
-        public const string credPath = "./secret/credentials.json";
+        public const string secretPath   = "./secret/";
+        public const string tokenDirname = "token";
+        public const string credFilename = "credentials.json";
         private GmailService service;
         private UserCredential credentials;
         
@@ -47,7 +38,12 @@ namespace Gmail
         public GmailAPI(string ApplicationName, string[] scopes)
         {
             // Open a browser session to authenticate with the app if no tokens.json directory exists
-            this.setupCredentials();
+            try { this.setupCredentials(); }
+            catch (Exception e) 
+            { 
+                Console.Error.WriteLine(e); 
+                Environment.Exit(1); 
+            }
             
             // Create Gmail API service.
             this.service = new GmailService(new BaseClientService.Initializer()
@@ -56,29 +52,159 @@ namespace Gmail
                 ApplicationName = ApplicationName,
             });
         }
-
         private void setupCredentials()
         {
-            if ( !File.Exists(GmailAPI.tokenPath) )
+            if ( Directory.Exists(GmailAPI.secretPath) )
             {
-                Console.WriteLine(string.Format("Initialising authorization for new token ({0})", GmailAPI.tokenPath));
-                using (var stream = new FileStream(GmailAPI.credPath, FileMode.Open, FileAccess.Read))
+                if ( !Directory.Exists(GmailAPI.secretPath + GmailAPI.tokenDirname) )
                 {
-                    // The file token.json stores the user's access and refresh tokens, and is created
-                    // automatically when the authorization flow completes for the first time.
-                    // I.e. we only need to authorize once in the browser after which all API communcation
-                    // will be done server side
-                    this.credentials = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                        GoogleClientSecrets.Load(stream).Secrets,
-                        GmailAPI.scopes,
-                        "user",
-                        System.Threading.CancellationToken.None,
-                        new FileDataStore(GmailAPI.tokenPath, true)).Result;
+                    Console.WriteLine(string.Format("Initialising authorization for new token ({0})", GmailAPI.secretPath + GmailAPI.tokenDirname));
                 }
+                else { Console.WriteLine("Using existing credentials at " + GmailAPI.secretPath + GmailAPI.tokenDirname ); }
+                
+                var stream = new FileStream(GmailAPI.secretPath + GmailAPI.credFilename, FileMode.Open, FileAccess.Read);
+                
+                // The token directory stores the user's access and refresh tokens, and is created
+                // automatically when the authorization flow completes for the first time.
+                // I.e. we only need to authorize once in the browser after which all API communcation
+                // will be done server side
+                this.credentials = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.Load(stream).Secrets,
+                    GmailAPI.scopes,
+                    "user",
+                    System.Threading.CancellationToken.None,
+                    new FileDataStore(GmailAPI.secretPath +  GmailAPI.tokenDirname, true)
+                ).Result;
             }
-            else { Console.WriteLine("Using existing credentials at " + GmailAPI.tokenPath); }
+            else { throw new DirectoryNotFoundException("Missing path: " + GmailAPI.secretPath); }
+        }
+        
+        public List<EmailThread> getThreadsFromLabel(string userId, string label, bool fetchBody=true)
+        {
+            // With all threads fetched retrieve the metadata and payload of the corresponding messages
+            List<EmailThread> threads = new List<EmailThread>();
+            
+            // NOTE that the Messages.List() endpoint does NOT return metadata about messages, for that
+            // we need to request each message individually...
+
+            string nextToken = "";
+            List<Thread> gmailThreads = new List<Thread>();
+            UsersResource.ThreadsResource.ListRequest request; 
+            ListThreadsResponse response;
+            
+            do
+            // Keep on sending requests (async) until a response without a NextPageToken is
+            // encountered, at that point we have fetched all threads
+            {
+                request = this.service.Users.Threads.List(userId);
+
+                // Limit search to the specified label
+                // We can specify an array but then we will only
+                // recieve messages matching ALL the labels (&& style)
+                request.LabelIds = label;
+
+                // Set the nextToken to fetch the next batch of results
+                if (nextToken != null) request.PageToken = nextToken;
+
+                try 
+                { 
+                    response = request.Execute(); 
+                    nextToken = response.NextPageToken;
+                    gmailThreads.AddRange( response.Threads );
+                }
+                catch (Exception e){ Console.Error.WriteLine(e); return threads; }
+                
+            } while ( nextToken != null );
+
+
+            Parallel.ForEach( gmailThreads , (thread) =>
+            // Parse the messages from each thread in parallell
+            {
+                var threadMessages = fetchThreadMessages(userId, thread.Id, fetchBody);
+                if (threadMessages[0] != null)
+                {
+                    threads.Add( new EmailThread( thread.Id, thread.Snippet, threadMessages )  );
+                }
+            });
+             
+            return threads;
+        } 
+        public EmailMessage[] fetchThreadMessages(string userId, string threadId, bool fetchBody=true)
+        {
+            // Initalize for base case return value
+            List<Message> gmailThreadMessages = new List<Message>();
+            
+            #if _DEBUG
+                Console.WriteLine(string.Format("Fetching: {0}", threadId ));
+            #endif
+            try 
+            { 
+                // HTTP request to fetch all messages based on a threadId (fairly time consuming)
+                gmailThreadMessages = (List<Message>)this.service.Users.Threads.Get(userId, threadId).Execute().Messages;
+            }
+            catch (Exception e){ Console.Error.WriteLine(e); }
+        
+            #if _DEBUG
+                Console.WriteLine(string.Format("Completed: {0}", threadId));
+            #endif
+            
+            return parseMessages(gmailThreadMessages, fetchBody);;
+        }
+        private EmailMessage[] parseMessages(List<Message> messages, bool fetchBody=true)
+        {
+            EmailMessage[] threadMessages = new EmailMessage[messages.Count];
+            MessagePartHeader[] headers;
+            string messageBody = "";
+            DateTime date;
+            int index = 0;
+            
+            foreach (Message msg in messages)
+            // Go through each message in the thread
+            {
+                // Extract the body
+                if(fetchBody) messageBody = extractBodyFromMessage( msg );
+
+                // Determine the relevant header values and create a new EmailMessage object
+                headers = new MessagePartHeader[msg.Payload.Headers.Count]; 
+                msg.Payload.Headers.CopyTo(headers,0);
+
+                date = parseDateFromEmailHeaders(headers);
+            
+                // Incrment the index upon adding a new message
+                threadMessages[index++] = new EmailMessage(
+                   Array.Find( headers, (MessagePartHeader h) => h.Name == "Subject" ).Value, 
+                   Array.Find( headers, (MessagePartHeader h) => h.Name == "From" ).Value, 
+                   date, 
+                   messageBody
+                );
+            }
+
+            return threadMessages;
         }
 
+        //***********************************************//
+        private DateTime parseDateFromEmailHeaders(MessagePartHeader[] headers)
+        {
+            string _date = "";
+            DateTime date;
+
+            try 
+            // Attempt to sanitize the date and parse it
+            { 
+                _date = Array.Find( headers, (MessagePartHeader h) => h.Name == "Date" ).Value;
+                _date = Regex.Replace(_date, Regex.Escape("(") + "(UTC|PST).*" + Regex.Escape(")") + ".*", "");
+                date = DateTime.Parse(_date); 
+            }
+            catch(Exception e)
+            { 
+                Console.Error.WriteLine(e);
+                if (e is FormatException)
+                    Console.Error.WriteLine(_date);
+                date = new DateTime();
+            }
+
+            return date;
+        }
         private byte[] decodeBase64Url(string arg)
         {
             if (arg == null)
@@ -90,100 +216,39 @@ namespace Gmail
                     .Replace("-", "+");
             return Convert.FromBase64String(s);
         }
-        public IList<EmailMessage[]> getThreads(string userId)
+        private string extractBodyFromMessage(Message msg)
         {
-            // Return a list of EmailMessage arrays (one per Threed)
-            // [ 
-            //  [ { Subject, Sender, Date, Body }, {...} ],
-            //  [...]
-            // ]
-            EmailMessage[] threadMessages;
-            MessagePartHeader[] headers;
-            IList<Message> gmailThreadMessages;
-            string messageBody;
             byte[] bytes;
-            DateTime date;
-            string _date = "";
+            string messageBody = "";
 
-            // Send a HTTP request to the relevant REST endpoint
-            // to fetch a list of the IDs for all email-threads
-            IList<Thread> gmailThreads = this.service.Users.Threads.List(userId).Execute().Threads; 
-            IList<EmailMessage[]> threads = new List<EmailMessage[]>();
-            
-            foreach(Thread _t in gmailThreads)
-            // Go through each thread
+            if (msg.Payload.Parts != null)
+            // The retrieved body can be chunked into Payload.Parts
             {
-                // HTTP request to fetch all messages based on a threadId 
-                gmailThreadMessages = this.service.Users.Threads.Get(userId, _t.Id).Execute().Messages;
-                threadMessages = new EmailMessage[gmailThreadMessages.Count];
-
-                for (int i = 0; i < gmailThreadMessages.Count; i++)
-                // Go through each message in the thread
+                foreach (MessagePart part in msg.Payload.Parts)
                 {
-                    messageBody = "";
-                
-                    if (gmailThreadMessages[i].Payload.Parts != null)
-                    // The retrieved body can be chunked into Payload.Parts
+                    if(part.Body.Data == null) continue;
+
+                    // Each body chunk is furthermore obfuscated with URLencoded base64
+                    try
                     {
-                        foreach (MessagePart part in gmailThreadMessages[i].Payload.Parts)
-                        {
-                            if(part.Body.Data == null) continue;
-
-                            // Each body chunk is furthermore obfuscated with URLencoded base64
-                            try
-                            {
-
-                                //bytes = WebEncoders.Base64UrlDecode( part.Body.Data );
-                                bytes   = this.decodeBase64Url( part.Body.Data ); 
-                                messageBody += System.Text.Encoding.UTF8.GetString( bytes );
-                            }
-                            catch (Exception e) { Console.Error.WriteLine(e); } 
-                        }
+                        bytes   = this.decodeBase64Url( part.Body.Data ); 
+                        messageBody += System.Text.Encoding.UTF8.GetString( bytes );
                     }
-                    else
-                    // Or given in one chunk
-                    {
-                        try
-                        {
-                            //bytes = WebEncoders.Base64UrlDecode( gmailThreadMessages[i].Payload.Body.Data );
-                            bytes   = this.decodeBase64Url( gmailThreadMessages[i].Payload.Body.Data ); 
-                            messageBody = System.Text.Encoding.UTF8.GetString( bytes );
-                        }
-                        catch (Exception e){ Console.Error.WriteLine(e); }
-                    }
-
-                    // Determine the relevant header values and create a new EmaillMessage object
-                    headers = new MessagePartHeader[gmailThreadMessages[i].Payload.Headers.Count]; 
-                    gmailThreadMessages[i].Payload.Headers.CopyTo(headers,0);
-
-                    try 
-                    // Attempt to sanitize the date and parse it
-                    { 
-                        _date = Array.Find( headers, (MessagePartHeader h) => h.Name == "Date" ).Value;
-                        _date = Regex.Replace(_date, Regex.Escape("(") + "(UTC|PST).*" + Regex.Escape(")") + ".*", "");
-                        date = DateTime.Parse(_date); 
-                    }
-                    catch(Exception e)
-                    { 
-                        Console.Error.WriteLine(e);
-                        if (e is FormatException)
-                            Console.Error.WriteLine(_date);
-                        date = new DateTime();
-                    }
-                
-                    threadMessages[i] = new EmailMessage(
-                       Array.Find( headers, (MessagePartHeader h) => h.Name == "Subject" ).Value, 
-                       Array.Find( headers, (MessagePartHeader h) => h.Name == "From" ).Value, 
-                       date, 
-                       messageBody
-                    );
+                    catch (Exception e) { Console.Error.WriteLine(e); } 
                 }
-                
-                threads.Add(threadMessages);
             }
-            
-            return threads;
+            else
+            // Or given in one chunk
+            {
+                try
+                {
+                    bytes   = this.decodeBase64Url( msg.Payload.Body.Data ); 
+                    messageBody = System.Text.Encoding.UTF8.GetString( bytes );
+                }
+                catch (Exception e){ Console.Error.WriteLine(e); }
+            }
+
+            return messageBody;
         }
     }
-        
 }

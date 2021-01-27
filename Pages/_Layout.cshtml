@@ -5,11 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mayler — @ViewData["Title"]</title>
     <link href="style.css" rel="stylesheet" , type="text/css">
+    <link href="nerd-fonts.min.css" rel="stylesheet" , type="text/css">
     <link rel="shortcut icon" type="img/png" href="favicon.png">
-    
 </head>
 <body>
+    <img id="bkg" src="resc/background.jpg">
+    <div id="bar">
+        <select tabindex="-1" id="label"  ></select>
+        <select tabIndex="-1" id="account"></select>
+    </div>
+
+
     @RenderBody()
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script type="module" src="client.js"></script>
 </body>
 </html>

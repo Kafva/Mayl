@@ -6,12 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Gmail;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
+using Web.Dispatchs;
 
 namespace Web
 {
     public class Startup
     {
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         // https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -28,8 +31,8 @@ namespace Web
             services.AddRazorPages();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             
@@ -43,55 +46,24 @@ namespace Web
                 // will act as routes for the Razor pages
                 endpoints.MapRazorPages();
 
-                // Setup non-interactive REST endpoints
-                this.setupEndpoints(endpoints);
+                var dispatch = new Dispatch();
+
+                // Endpoint for fetching all threads
+                // ?label=(string)
+                // ?fetchBody=(true if present)
+                endpoints.MapGet("/{userId}/" + Dispatch.MAIL_ENDPOINT, httpContext => 
+                    dispatch.routeDispatcher(httpContext, Dispatch.MAIL_ENDPOINT) );
+                
+                // Endpoint for fetching data regarding a specific thread
+                // ?id=(threadId)
+                endpoints.MapGet("/{userId}/" + Dispatch.THREAD_ENDPOINT, httpContext => 
+                    dispatch.routeDispatcher(httpContext, Dispatch.THREAD_ENDPOINT) );
+                
+                // Endpoint for fetching all labels
+                endpoints.MapGet("/{userId}/" + Dispatch.LABELS_ENDPOINT, httpContext => 
+                    dispatch.routeDispatcher(httpContext, Dispatch.LABELS_ENDPOINT) ); 
             });
         }
 
-        private void setupEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpoints)
-        {
-            endpoints.MapGet("/mail", async httpContext =>
-            // REST endpoint for fetching all threads
-            // ?label=(string)
-            // ?fetchBody=(true if present)
-            {
-                Microsoft.Extensions.Primitives.StringValues label = "";
-
-                if ( httpContext.Request.Query.TryGetValue("label", out label) )
-                // 'out' keyword caues a parameter to be passed by reference
-                {
-                    // Fetch the single-instance GmailAPI service of the app 
-                    var services = httpContext.RequestServices;
-                    var gmailAPI = (IGmailAPI<EmailThread>)services.GetService(typeof(IGmailAPI<EmailThread>)); 
-                    
-                    Microsoft.Extensions.Primitives.StringValues _fetchBody;
-                    bool fetchBody = false;
-                    if (httpContext.Request.Query.TryGetValue("fetchBody", out _fetchBody) ) fetchBody = true;
-                    
-                    var threads = gmailAPI.getThreadsFromLabel("me", label, fetchBody);
-                    await httpContext.Response.WriteAsJsonAsync( JsonSerializer.Serialize(threads) );
-                } 
-                else { await httpContext.Response.WriteAsync("{}"); }
-            });
-            
-            endpoints.MapGet("/thread", async httpContext =>
-            // REST endpoint for fetching data regarding a specific thread
-            // ?id=(threadId)
-            {
-                Microsoft.Extensions.Primitives.StringValues threadId = "";
-
-                if ( httpContext.Request.Query.TryGetValue("id", out threadId) )
-                {
-                    // Fetch the single-instance GmailAPI service of the app 
-                    var services = httpContext.RequestServices;
-                    var gmailAPI = (IGmailAPI<EmailThread>)services.GetService(typeof(IGmailAPI<EmailThread>)); 
-                    
-                    var messages = gmailAPI.fetchThreadMessages("me", threadId);
-                    await httpContext.Response.WriteAsJsonAsync( JsonSerializer.Serialize(messages) );
-                } 
-                else { await httpContext.Response.WriteAsync("{}"); }
-            });
-
-        }
     }
 }

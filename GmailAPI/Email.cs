@@ -37,7 +37,9 @@ namespace Gmail
         {
             this.threadId = threadId;
             this.emails   = emails;
-            this.snippet  = snippet.Substring(0, EmailThread.SNIPPET_SIZE);
+            this.snippet  = snippet.Length > SNIPPET_SIZE ? 
+                snippet.Substring(0, EmailThread.SNIPPET_SIZE) : 
+                snippet;
         }
     }
 }

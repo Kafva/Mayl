@@ -9,12 +9,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Gmail
 {
     public interface IGmailAPI<T>
     // Let the GmailAPI class inherit from the interface
     {
+        public List<string> getLabels(string userId);
+
         List<T> getThreadsFromLabel(string userId, string label, bool fetchBody=true);
         public EmailMessage[] fetchThreadMessages(string userId, string threadId, bool fetchBody=true);
     }
@@ -79,6 +82,20 @@ namespace Gmail
             else { throw new DirectoryNotFoundException("Missing path: " + GmailAPI.secretPath); }
         }
         
+        public List<string> getLabels(string userId)
+        {
+            List<Label> gmailLabels = new List<Label>(); 
+            List<string> labels = new List<string>();
+            
+            try 
+            { 
+                gmailLabels = (List<Label>)this.service.Users.Labels.List(userId).Execute().Labels; 
+            }
+            catch (Exception e){ Console.Error.WriteLine(e); }
+
+            gmailLabels.ForEach( (Label l) => labels.Add(l.Name) );
+            return labels;
+        }
         public List<EmailThread> getThreadsFromLabel(string userId, string label, bool fetchBody=true)
         {
             // With all threads fetched retrieve the metadata and payload of the corresponding messages
@@ -192,7 +209,7 @@ namespace Gmail
             // Attempt to sanitize the date and parse it
             { 
                 _date = Array.Find( headers, (MessagePartHeader h) => h.Name == "Date" ).Value;
-                _date = Regex.Replace(_date, Regex.Escape("(") + "(UTC|PST).*" + Regex.Escape(")") + ".*", "");
+                _date = Regex.Replace(_date, Regex.Escape("(") + "(UTC|PST|GMT).*" + Regex.Escape(")") + ".*", "");
                 date = DateTime.Parse(_date); 
             }
             catch(Exception e)

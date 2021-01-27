@@ -56,6 +56,12 @@ namespace Gmail.UnitTests
             Assert.Empty(threads);
         }
         
+        [Fact]
+        private void Test_getLabels()
+        {
+            var threads = this.gmailAPI.getLabels("me");
+            Assert.NotEmpty(threads);
+        }
         
 
     }

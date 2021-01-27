@@ -4,8 +4,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <!-- Note that we need to exclude the gmailAPI/obj directory
-    from the build process -->
+    <!-- Note that we need to exclude certain directories from the build process -->
     <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;untracked/**;GmailAPI/**;Tests/**;ConsoleDebug/**</DefaultItemExcludes>
   </PropertyGroup>
   

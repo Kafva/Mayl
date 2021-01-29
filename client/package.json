@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "npx webpack build"
+  },
   "dependencies": {
     "babel-loader": "^8.2.2",
     "css-loader": "^5.0.1",

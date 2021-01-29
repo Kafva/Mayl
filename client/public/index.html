@@ -10,7 +10,6 @@
     <!-- Set the background -->
     <img id="bkg" v-bind:src="background"> 
     <div id="bar">
-        <!--<hello/>-->
     </div>
     
     <table id="mailList">
@@ -26,6 +25,7 @@
                 <td>{{ thread.emails[0].sender }}</td>
                 <td>{{ thread.snippet }}</td>
                 <td>{{ thread.emails[0].date }}</td>
+                <td hidden>{{ thread.threadId }}</td>
             </tr>
         </tbody>
     </table>

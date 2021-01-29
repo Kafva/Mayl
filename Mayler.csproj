@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   
-  
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
@@ -11,7 +10,7 @@
   
   <!-- Compile client side Javascript before each build -->
   <Target Name="Generate dist" BeforeTargets="BeforeBuild">
-    <Exec Command="npx webpack build --config webpack.config.js" WorkingDirectory="client" ConsoleToMSBuild="true"/>
+    <Exec Command="npm run build" WorkingDirectory="client" />
   </Target> 
     
   <ItemGroup>

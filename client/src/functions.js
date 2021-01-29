@@ -5,7 +5,7 @@ const fetchThreads = async () =>
     // https://vuejs.org/v2/cookbook/using-axios-to-consume-apis.html
     let res = await fetch("/me/mail?label=STARRED", {
         method: "GET",
-        //headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json"},
     });
     
     let body = null;
@@ -17,7 +17,7 @@ const fetchThreads = async () =>
         
         // Something is fcked with the output from the server
         // double parse...
-        let _json = JSON.parse(body) 
+        let _json = JSON.parse(body)
         _json = JSON.parse(_json) 
         console.log(_json, _json.threadId);
         return _json;
@@ -32,5 +32,10 @@ const fetchThreads = async () =>
     //return [...Array(20).keys()].map( () => el ); 
 }
 
+const getBodyOfMessage = (threadId) =>
+{
+    return "wow";
+}
 
-export { fetchThreads };
+
+export { fetchThreads, getBodyOfMessage };

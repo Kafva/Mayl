@@ -50,7 +50,7 @@ namespace Web
                 endpoints.MapGet("/", async httpContext =>
                 {
                    httpContext.Response.Headers.Append("Content-Type", "text/html");
-                   await httpContext.Response.SendFileAsync("./client/public/index.html"); 
+                   await httpContext.Response.SendFileAsync("./Client/public/index.html"); 
                 });
 
                 var dispatch = new Dispatch();

@@ -1,7 +1,21 @@
-import * as Functions from './functions.js'
+// Import statements will trigger webpack to include the given CSS into the resulting bundle
+import './style.css'
+import './nerd-fonts.min.css'
 
-// This import statement will trigger webpack to include style.css into the resulting bundle
-import css from './style.css'
+import * as Functions from './functions.js'
+import Vue from 'vue'
+
+// TODO CSS isn't ran
+
+// Assests included in the packing process wiil be given random names
+// and we can therefore not reference them statically in the .html
+import Bkg from '../assets/background.jpg'
+document.querySelector("#bkg").setAttribute("src", Bkg);
+
+// To use a component in our HTML we need to create a Vue() object
+// which has the <component> as a child
+Vue.component('hello', require('../components/Hello.vue').default);
+new Vue({ el: "#bar"});
 
 // A Vue app will attach itself to an HTML node which we can control
 // with a more reactive API compared to plain JS
@@ -22,9 +36,21 @@ var vm = new Vue({
         //threads: [
         //    { threadId: null, snippet: null, emails:[{sender: null, date: null}] } 
         //]
-        threads: [{"threadId":"17301e393da5279e","snippet":"Hey Blink, Thanks for registering for an account on Discord! Before we get started, we just need to ","emails":[{"subject":"Verify Email Address for Discord","body":"","sender":"Discord \u003Cnoreply@discordapp.com\u003E","date":"2020-06-29T23:02:35+02:00"}]}]
+        threads: [{"threadId":"17301e393da5279e","snippet":"Hey Blink, Thanks for registering for an account on Discord! Before we get started, we just need to ","emails":[{"subject":"Verify Email Address for Discord","body":"","sender":"Discord \u003Cnoreply@discordapp.com\u003E","date":"2020-06-29T23:02:35+02:00"}]}],
     }
 });
+
+//Vue.component('button-counter', {
+//  data: function () {
+//    return {
+//      count: 0
+//    }
+//  },
+//  template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+//})
+//
+//new Vue({ el: '#components-demo' })
+
 
 
 //(async () =>

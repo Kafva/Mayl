@@ -8,7 +8,7 @@ using Gmail;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
-using Web.Dispatchs;
+using Web.Dispatchs; 
 
 namespace Web
 {
@@ -19,6 +19,8 @@ namespace Web
         // https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();  
+            
             // Services can be of the types transient, scoped or singleton
             //  * Transient objects are always different; a new instance is provided to every controller and every service.
             //  * Scoped objects are the same within a request, but different across different requests.
@@ -27,33 +29,32 @@ namespace Web
             services.AddSingleton<IGmailAPI<EmailThread>, GmailAPI>( 
                 _ => new GmailAPI(Program.applicationName, GmailAPI.scopes)
             );
-            
-            services.AddRazorPages();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         {
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            //if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             
             app.UseStaticFiles();
 
             app.UseRouting();
- 
+            
             app.UseEndpoints(endpoints =>
             {
                 // The filenames of the .cshtml pages under ./Pages/
                 // will act as routes for the Razor pages
                 //endpoints.MapRazorPages();
 
-                var dispatch = new Dispatch();
 
                 endpoints.MapGet("/", async httpContext =>
                 {
                    httpContext.Response.Headers.Append("Content-Type", "text/html");
-                   await httpContext.Response.SendFileAsync("./wwwroot/index.html"); 
+                   await httpContext.Response.SendFileAsync("./client/public/index.html"); 
                 });
 
+                var dispatch = new Dispatch();
+                
                 // Endpoint for fetching all threads
                 // ?label=(string)
                 // ?fetchBody=(true if present)

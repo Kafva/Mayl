@@ -24,6 +24,8 @@ namespace Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    // Change the webroot for static files
+                    webBuilder.UseWebRoot("./client/public");
                     webBuilder.UseStartup<Startup>();
                 });
     }

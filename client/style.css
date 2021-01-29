@@ -2,7 +2,7 @@
 {
     /* https://fonts.google.com/specimen/Source+Sans+Pro?sidebar.open=true&selection.family=Source+Sans+Pro */
     font-family: 'Source Sans Pro';
-    src: url('resc/SourceSansPro-Regular.ttf'); 
+    src: url('./fonts/SourceSansPro-Regular.ttf'); 
 }
 
 * 

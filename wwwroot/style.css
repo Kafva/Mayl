@@ -33,9 +33,10 @@ body
 #bkg
 {
     position: fixed;
+    height: 100%;
+    width: 100%;
+    text-align: center;
     z-index: -1;
-    height: 1200px;
-    width: auto;
 }
 
 /********** Bar **********/
@@ -86,12 +87,13 @@ body
     margin-right: 15px;
     padding: 15px;
     
+    /* Fade out 
     animation: fadeIn100 0.5s;
 
-    /* Fade out */
     visibility: visible;
     opacity: 1;
     transition: opacity 0.5s linear;
+    */
 }
 
 .Item

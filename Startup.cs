@@ -44,9 +44,15 @@ namespace Web
             {
                 // The filenames of the .cshtml pages under ./Pages/
                 // will act as routes for the Razor pages
-                endpoints.MapRazorPages();
+                //endpoints.MapRazorPages();
 
                 var dispatch = new Dispatch();
+
+                endpoints.MapGet("/", async httpContext =>
+                {
+                   httpContext.Response.Headers.Append("Content-Type", "text/html");
+                   await httpContext.Response.SendFileAsync("./wwwroot/index.html"); 
+                });
 
                 // Endpoint for fetching all threads
                 // ?label=(string)

@@ -9,6 +9,11 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);client/node_modules/**;obj/**;untracked/**;GmailAPI/**;Tests/**;ConsoleDebug/**</DefaultItemExcludes>
   </PropertyGroup>
   
+  <!-- Compile client side Javascript before each build -->
+  <Target Name="Generate dist" BeforeTargets="BeforeBuild">
+    <Exec Command="npx webpack build --config webpack.config.js" WorkingDirectory="client" ConsoleToMSBuild="true"/>
+  </Target> 
+    
   <ItemGroup>
 	  <ProjectReference Include="./GmailAPI/GmailAPI.csproj" />
   </ItemGroup>

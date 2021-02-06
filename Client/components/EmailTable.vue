@@ -18,7 +18,7 @@
 
 <script>
 
-// The import statements constitute the 'registration' process for components when using webpack
+import {DEBUG}  from '../src/config.js';
 import EmailRow from '../components/EmailRow.vue';
 
 export default {
@@ -34,29 +34,36 @@ export default {
     
     data: function() {
         return {
-            threads: [
-                {
-                    threadId:"17301e393da5279e",
-                    snippet:"Hey Dlink", 
-                    emails:[
-                        {
-                            sender: "wow", 
-                            date:"2020-06-29T23:02:35+02:00"
-                        }
-                    ]
-                }
-            ],
-            //threads: null,
+            label: "STARRED",
+            threads: null, 
         }
+    },
+    
+    // Runs when a new component instance is created
+    created() { this.fetchThreads(); },
+
+    methods:
+    {
+        fetchThreads: async function()
+        {
+            let res = await fetch(`/me/mail?label=${this.label}`, {
+                method: "GET",
+                headers: {"Content-Type": "application/json"},
+            });
+            
+            let body = null;
+            try 
+            { 
+                body = await res.text();
+                
+                // Decode from base64 and then translate \u sequences into actual
+                // glyphs with JSON.parse()
+                this.threads = JSON.parse( atob(body)  );
+                if(DEBUG) console.log(this.threads);
+            }
+            catch (e) { console.error(e); }
+        },
     }
-    //methods:
-    //{
-    //   displayBody: function (event) 
-    //    { 
-    //       console.log(event); 
-    //       return Functions.getBodyOfMessage(); 
-    //    } 
-    //}
 }
 </script>
 
@@ -71,7 +78,7 @@ table
 {
     position: absolute;
     left: 5%;
-    top: 5%;
+    top: 6%;
     
     border-collapse: collapse;
     text-align: right;

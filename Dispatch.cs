@@ -57,9 +57,12 @@ namespace Web.Dispatchs
                 
                 var threads = gmailAPI.getThreadsFromLabel(userId, label, fetchBody);
                 
-                // Note that we need to .Unescape() the serialized JSON as otherwise it may contain
-                // unicode escape sequences
-                await httpContext.Response.WriteAsync(  Regex.Unescape( JsonSerializer.Serialize(threads) ) );
+                // Transmit the data as utf-8 bytes encoded in base64 to avoid
+                // encoding inconsitcies 
+                await httpContext.Response.WriteAsync(  Convert.ToBase64String( 
+                        JsonSerializer.SerializeToUtf8Bytes(threads), Base64FormattingOptions.None
+                    )
+                );
             } 
             else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
         }
@@ -75,7 +78,11 @@ namespace Web.Dispatchs
                 var gmailAPI = (IGmailAPI<EmailThread>)services.GetService(typeof(IGmailAPI<EmailThread>)); 
                 
                 var messages = gmailAPI.fetchThreadMessages(userId, threadId);
-                await httpContext.Response.WriteAsync(  Regex.Unescape( JsonSerializer.Serialize(messages) ) );
+                await httpContext.Response.WriteAsync(  Convert.ToBase64String( 
+                        JsonSerializer.SerializeToUtf8Bytes(messages), Base64FormattingOptions.None
+                    )
+                );
+
             }
             else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
         }
@@ -86,7 +93,10 @@ namespace Web.Dispatchs
             var gmailAPI = (IGmailAPI<EmailThread>)services.GetService(typeof(IGmailAPI<EmailThread>)); 
             
             var labels = gmailAPI.getLabels(userId);
-            await httpContext.Response.WriteAsync(  Regex.Unescape( JsonSerializer.Serialize(labels) ));
+            await httpContext.Response.WriteAsync(  Convert.ToBase64String( 
+                    JsonSerializer.SerializeToUtf8Bytes(labels), Base64FormattingOptions.None
+                )
+            );
         }
         
    }

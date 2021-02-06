@@ -1,5 +1,7 @@
 // Scope:
 //      * Click to view body      --> (Hide table)
+//      * <Select> label
+//      * The bar will contain functionality required by the emailtable, make it a child!
 //      * Click to delete/archive --> (Update table)
 // ----------------------------- //
 // Import statements will trigger webpack to include the given CSS into the resulting bundle

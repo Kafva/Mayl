@@ -1,6 +1,6 @@
 const CONFIG = Object.freeze(
 {
-    tableColumns: 3
+    unknown: "Unknown"
 })
 
 export { CONFIG };

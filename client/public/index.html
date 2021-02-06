@@ -7,28 +7,23 @@
     <link rel="shortcut icon" type="img/png" href="favicon.png">
 </head>
 <body>
-    <!-- Set the background -->
+    <!-- To link up elements special HTML attributes prefixed with 'v-' called directives are used
+    'v-on' == @                                 is used to add eventListeners to nodes
+    'v-bind:<attrName>="vm.$data.x"  == :<name> is used to dynamically link HTML attributes
+    -->
+
+    <!-- Vue() instance #1: Manage the background -->
     <img id="bkg" v-bind:src="background"> 
+    
+    <!-- Vue() instance #2: Manage the bar -->
     <div id="bar">
+        <bar/>
     </div>
     
-    <table id="mailList">
-        <!-- [Sender]   [Snippet] [DateTime]  -->
-        <thead>
-            <th class="nf nf-mdi-mail_ru"></th>
-            <th class="nf nf-mdi-view_headline"></th>
-            <th class="nf nf-fa-calendar"></th>
-        </thead>
-        <tbody>
-            <!-- Vue directive to add threads -->
-            <tr class="Item" v-for="thread in threads">
-                <td>{{ thread.emails[0].sender }}</td>
-                <td>{{ thread.snippet }}</td>
-                <td>{{ thread.emails[0].date }}</td>
-                <td hidden>{{ thread.threadId }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- Vue() instance #3: Manage the email list and Message Display -->
+    <div id="emails">
+        <email-table/>
+    </div>
     
     <script type="module" src="dist/bundle.js"></script>
 </body>

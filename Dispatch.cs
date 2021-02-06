@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Gmail;
 using System.Text.Json;
@@ -55,7 +56,10 @@ namespace Web.Dispatchs
                 if (httpContext.Request.Query.TryGetValue("fetchBody", out _fetchBody) ) fetchBody = true;
                 
                 var threads = gmailAPI.getThreadsFromLabel(userId, label, fetchBody);
-                await httpContext.Response.WriteAsJsonAsync( JsonSerializer.Serialize(threads) );
+                
+                // Note that we need to .Unescape() the serialized JSON as otherwise it may contain
+                // unicode escape sequences
+                await httpContext.Response.WriteAsync(  Regex.Unescape( JsonSerializer.Serialize(threads) ) );
             } 
             else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
         }
@@ -71,7 +75,7 @@ namespace Web.Dispatchs
                 var gmailAPI = (IGmailAPI<EmailThread>)services.GetService(typeof(IGmailAPI<EmailThread>)); 
                 
                 var messages = gmailAPI.fetchThreadMessages(userId, threadId);
-                await httpContext.Response.WriteAsJsonAsync( JsonSerializer.Serialize(messages) );
+                await httpContext.Response.WriteAsync(  Regex.Unescape( JsonSerializer.Serialize(messages) ) );
             }
             else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
         }
@@ -82,7 +86,7 @@ namespace Web.Dispatchs
             var gmailAPI = (IGmailAPI<EmailThread>)services.GetService(typeof(IGmailAPI<EmailThread>)); 
             
             var labels = gmailAPI.getLabels(userId);
-            await httpContext.Response.WriteAsJsonAsync( JsonSerializer.Serialize(labels) );
+            await httpContext.Response.WriteAsync(  Regex.Unescape( JsonSerializer.Serialize(labels) ));
         }
         
    }

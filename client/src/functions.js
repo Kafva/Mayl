@@ -12,24 +12,10 @@ const fetchThreads = async () =>
     try 
     { 
         body = await res.text();
-        body = body.replace(/\\\\u003C/, "");
-        body = body.replace(/\\\\u003E/, "");
-        
-        // Something is fcked with the output from the server
-        // double parse...
-        let _json = JSON.parse(body)
-        _json = JSON.parse(_json) 
-        console.log(_json, _json.threadId);
-        return _json;
+        console.log(JSON.parse(body));
+        return JSON.parse(body);
     }
     catch (e) { console.error(e,body); }
-    
-    //let el = {
-    //    subject: "subject",
-    //    sender: "sender",
-    //    date: "2020" 
-    //};
-    //return [...Array(20).keys()].map( () => el ); 
 }
 
 const getBodyOfMessage = (threadId) =>

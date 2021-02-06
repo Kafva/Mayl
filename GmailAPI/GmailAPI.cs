@@ -138,10 +138,14 @@ namespace Gmail
             // Parse the messages from each thread in parallell
             {
                 var threadMessages = fetchThreadMessages(userId, thread.Id, fetchBody);
-                if (threadMessages[0] != null)
+                try
                 {
-                    threads.Add( new EmailThread( thread.Id, thread.Snippet, threadMessages )  );
+                    if (threadMessages[0] != null)
+                    {
+                        threads.Add( new EmailThread( thread.Id, thread.Snippet, threadMessages )  );
+                    }
                 }
+                catch (Exception e){ Console.Error.WriteLine(e); }
             });
              
             return threads;
@@ -186,7 +190,7 @@ namespace Gmail
                 msg.Payload.Headers.CopyTo(headers,0);
 
                 date = parseDateFromEmailHeaders(headers);
-            
+                
                 // Incrment the index upon adding a new message
                 threadMessages[index++] = new EmailMessage(
                    Array.Find( headers, (MessagePartHeader h) => h.Name == "Subject" ).Value, 

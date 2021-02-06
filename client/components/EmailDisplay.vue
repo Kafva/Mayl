@@ -1,5 +1,5 @@
 <template>
-    <h2 class="text-center">Hello From Component</h2>
+    <h2 class="text-center"> wow </h2>
 </template>
 <script>
 export default {

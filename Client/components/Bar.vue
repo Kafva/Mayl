@@ -1,16 +1,27 @@
 <template>
-    <h1>{{ username }}</h1>
+    <div id="bar">
+      <h1>{{ username }}</h1>
+      <label-select></label-select>
+    </div>
 </template>
 <script>
+
+import LabelSelect from '../components/LabelSelect.vue';
 
 export default {
   name: 'bar',
   prop: { user: Object },
+  
+  components: 
+  {
+    'label-select': LabelSelect
+  },
+
   computed: 
   {
     username: function()
     {
-      return "Blink";
+      return "FranzKafque@gmail.com";
     }
   }
 }
@@ -19,21 +30,28 @@ export default {
 
 <style>
 
-h1{ font-size: 14px; float: right; padding-right: 20px; }
+h1 
+{ 
+  display: inline-block;
+  font-size: 14px; 
+  padding-right: 20px; 
+}
 
 #bar
 {
-    background-color: var(--bar);
-    opacity: 1.0;
-    position: fixed;
+  position: fixed;
+  left: 80%;
+  text-align: center;
+  width: 20%;
+  height: fit-content;
+  
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  
+  align-items: flex-start;
+  justify-content: flex-end;
 
-    /* The bar only contains text elements (besides the floated <select> elements) */
-    text-align: center;
-
-    width: 100%;
-    height: fit-content;
-    min-width: 50%;
-    z-index: 10;
 }
 
 </style>

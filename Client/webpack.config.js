@@ -21,7 +21,7 @@ module.exports = {
 
  // Resolve 'vue' in imports from app.js
  resolve: {
-      alias: { 'vue$': 'vue/dist/vue.esm.js' },
+      alias: { 'vue$': 'vue/dist/vue.esm.js', 'vue-select': 'vue-select/dist/vue-select.js' },
       extensions: ['*', '.js', '.vue', '.json']
   }, 
   // A core feature in webpack compared to alternatives like browserify + gulp is that supports bundling

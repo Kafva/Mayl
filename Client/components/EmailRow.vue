@@ -4,6 +4,8 @@
         <td>       {{ thread.snippet }} </td>
         <td>       {{ date }}           </td>
         <td hidden>{{ thread.threadId }}</td>
+        <td @:click="archiveMessage" class="btn nf nf-mdi-archive">  </td>
+        <td @:click="deleteMessage"  class="btn nf nf-fa-trash">      </td>
     </tr>
 </template>
 
@@ -35,6 +37,17 @@ export default {
             return this.thread.emails.length > 0 ? 
                 this.thread.emails[0].date : CONFIG.unknown; 
         }
+    },
+    methods:
+    {
+        archiveMessage: function()
+        {
+            console.log("TODO");
+        },
+        deleteMessage: function()
+        {
+            console.log("TODO");
+        },
     }
 }
 </script>
@@ -51,7 +64,6 @@ export default {
 
 .Item:hover
 {
-    border: 1px solid var(--tint);
     background-color: rgba(69, 69, 75, 0.5);
     opacity: 0.5;
     cursor: pointer;
@@ -63,5 +75,13 @@ export default {
     text-overflow: ellipsis;
     overflow: hidden;
     max-width: 250px;
+}
+
+.btn:hover
+{ 
+    cursor: pointer; 
+    background-color: rgba(209, 210, 210,0.5);
+    border-radius: 50%;
+    text-align: right;
 }
 </style>

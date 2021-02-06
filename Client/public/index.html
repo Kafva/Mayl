@@ -12,17 +12,12 @@
     'v-bind:<attrName>="vm.$data.x"  == :<name> is used to dynamically link HTML attributes
     -->
 
-    <!-- Vue() instance #1: Manage the background -->
-    <img id="bkg" v-bind:src="background"> 
-    
-    <!-- Vue() instance #2: Manage the bar -->
-    <div id="bar">
-        <bar/>
-    </div>
-    
-    <!-- Vue() instance #3: Manage the email list and Message Display -->
-    <div id="emails">
-        <email-table/>
+    <div id="root">
+        <img id="bkg" v-bind:src="background"> 
+       
+        <!-- Bind the label element to both the table and the bar -->
+        <bar :selected="label"></bar>
+        <email-table :label="label"></email-table>
     </div>
     
     <script type="module" src="dist/bundle.js"></script>

@@ -4,6 +4,8 @@
             <th class="nf nf-mdi-mail_ru"></th>
             <th class="nf nf-mdi-view_headline"></th>
             <th class="nf nf-fa-calendar"></th>
+            <th></th>
+            <th></th>
         </thead>
         <tbody>
             <!-- NOTE that thread.id is not a manually set attribute but an attribute
@@ -18,7 +20,7 @@
 
 <script>
 
-import {DEBUG}  from '../src/config.js';
+import {CONFIG, DEBUG}  from '../src/config.js';
 import EmailRow from '../components/EmailRow.vue';
 
 export default {
@@ -26,6 +28,11 @@ export default {
     // Since their implicit root is the <template> 
     name: 'email-table',
     
+    // The label will be a reactive 'data' attribute in the root
+    // which is passed both to the bar and the table
+    // this way updates to the label from the bar will propogate to the table
+    props: { label: String },
+
     components: 
     // Add the EmailRow component as a child
     {
@@ -34,11 +41,10 @@ export default {
     
     data: function() {
         return {
-            label: "STARRED",
             threads: null, 
         }
     },
-    
+   
     // Runs when a new component instance is created
     created() { this.fetchThreads(); },
 

@@ -5,27 +5,28 @@
     src: url('../fonts/SourceSansPro-Regular.ttf'); 
 }
 
+:root 
+{
+	/* COLORS */    
+    --bkg: #1a1c1f;
+    --text: #d1d2d2;
+    --tint: #bb92ac;
+    --highlight: #f2f9f9;
+    --transbkg: rgba(46, 45, 45, 0.5);
+    
+}
+
 * 
 { 
     font-family: 'Source Sans Pro', Arial; 
     overflow: scroll; 
     white-space: nowrap;
+    color: var(--text);
 }
-
-:root 
-{
-	/* COLORS */    
-    --bar: #131314;
-    --bkg: #1a1c1f;
-    --text: #d1d2d2;
-    --tint: #bb92ac;
-}
-
 
 body
 { 
     background-color: var(--bkg);
-    color: var(--text);
     margin: 0; padding: 0; border: 0; outline: 0;
     overflow: scroll;
 }

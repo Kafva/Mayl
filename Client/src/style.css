@@ -10,10 +10,9 @@
 	/* COLORS */    
     --bkg: #1a1c1f;
     --text: #d1d2d2;
-    --tint: #bb92ac;
     --highlight: #f2f9f9;
     --transbkg: rgba(46, 45, 45, 0.5);
-    
+    --hlbkg: rgba(43, 42, 42, 0.5);
 }
 
 * 
@@ -40,3 +39,16 @@ body
     z-index: -1;
 }
 
+/* Archive, Delete and Reload buttons */
+.btn 
+{ 
+    color: var(--text); 
+    opacity: 0.7; 
+    z-index: 9000;
+}
+.btn:hover
+{ 
+    cursor: pointer; 
+    opacity: 1.0;
+    color: white;
+}

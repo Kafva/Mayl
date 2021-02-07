@@ -8,16 +8,23 @@
 </head>
 <body>
     <!-- To link up elements special HTML attributes prefixed with 'v-' called directives are used
-    'v-on' == @                                 is used to add eventListeners to nodes
+    'v-on:' == @                                 is used to add eventListeners to nodes
     'v-bind:<attrName>="vm.$data.x"  == :<name> is used to dynamically link HTML attributes
+    Note that linking via ':' is meant to be used in a way were the PARENT modifies the
+    passed attribute, not the other way around
+    
+    Note that if we want to pass a static argument we can do so by omitting ':' 
+    but then we haft to enter its literal value
     -->
 
+    <!-- Component communication: https://medium.com/js-dojo/component-communication-in-vue-js-ca8b591d7efa -->
+
     <div id="root">
-        <img id="bkg" v-bind:src="background"> 
+        <img id="bkg" :src="background"> 
        
         <!-- Bind the label element to both the table and the bar -->
-        <bar :selected="label"></bar>
-        <email-table :label="label"></email-table>
+        <bar></bar> 
+        <email-table></email-table>
     </div>
     
     <script type="module" src="dist/bundle.js"></script>

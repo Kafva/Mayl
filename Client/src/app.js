@@ -1,9 +1,3 @@
-// Scope:
-//      * Click to view body      --> (Hide table)
-//      * <Select> label
-//      * Click to delete/archive --> (Update table, archive=[remove INBOX label]) 
-//      * Search? 
-// ----------------------------- //
 // Import statements will trigger webpack to include the given CSS into the resulting bundle
 import './style.css';
 import './nerd-fonts.min.css';
@@ -25,12 +19,11 @@ var root = new Vue({
     data: 
     { 
         background: Bkg,
-        label: CONFIG.defaultLabel,
     },
 
     components: 
     { 
         bar: Bar,
         'email-table': EmailTable,
-    }
+    },
 })

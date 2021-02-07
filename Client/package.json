@@ -12,7 +12,6 @@
     "style-loader": "^2.0.0",
     "vue": "^2.6.12",
     "vue-loader": "^15.9.6",
-    "vue-select": "3.11.2",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.12",
     "webpack": "^5.18.0",

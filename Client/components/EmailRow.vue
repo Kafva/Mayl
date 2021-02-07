@@ -4,8 +4,8 @@
         <td>       {{ thread.snippet }} </td>
         <td>       {{ date }}           </td>
         <td hidden>{{ thread.threadId }}</td>
-        <td @:click="archiveMessage" class="btn nf nf-mdi-archive">  </td>
-        <td @:click="deleteMessage"  class="btn nf nf-fa-trash">      </td>
+        <td @click="archiveMessage" class="btn nf nf-mdi-archive">  </td>
+        <td @click="deleteMessage"  class="btn nf nf-fa-trash">      </td>
     </tr>
 </template>
 
@@ -40,11 +40,11 @@ export default {
     },
     methods:
     {
-        archiveMessage: function()
+        archiveMessage: function(event)
         {
             console.log("TODO");
         },
-        deleteMessage: function()
+        deleteMessage: function(event)
         {
             console.log("TODO");
         },
@@ -59,7 +59,7 @@ export default {
     max-height: 18px;
     margin-bottom: 5px;
     
-    border-bottom: 1px solid rgba(65, 64, 64, 0.5)
+    border-bottom: 1px solid rgba(203, 198, 198, 0.5)
 }
 
 .Item:hover
@@ -69,6 +69,7 @@ export default {
     cursor: pointer;
 }
 
+
 .Item > td
 {
     /* Set an upper limit for the width of column text in the playlist */
@@ -77,11 +78,5 @@ export default {
     max-width: 250px;
 }
 
-.btn:hover
-{ 
-    cursor: pointer; 
-    background-color: rgba(209, 210, 210,0.5);
-    border-radius: 50%;
-    text-align: right;
-}
+
 </style>

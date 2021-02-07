@@ -31,7 +31,7 @@ export default {
     // The label will be a reactive 'data' attribute in the root
     // which is passed both to the bar and the table
     // this way updates to the label from the bar will propogate to the table
-    props: { label: String },
+    props: { },
 
     components: 
     // Add the EmailRow component as a child
@@ -41,12 +41,24 @@ export default {
     
     data: function() {
         return {
+            label: CONFIG.defaultLabel,
             threads: null, 
         }
     },
    
-    // Runs when a new component instance is created
-    created() { this.fetchThreads(); },
+    mounted()
+    { 
+        // Register a listener for the reloadInbox event sent by the <label-select> component
+        this.$root.$on("reloadInbox", (newLabel) =>
+        {
+            console.log("Got event!!!");
+            
+            if(newLabel) this.label = newLabel;
+            this.fetchThreads(); 
+        });
+        
+        this.fetchThreads(); 
+    },
 
     methods:
     {
@@ -105,7 +117,7 @@ table
 thead
 {
     margin-bottom: 5px;
-    border-bottom: 1px solid rgba(65, 64, 64, 0.5)
+    border-bottom: 1px solid rgba(203, 198, 198, 0.5)
 }
 
 td,th { padding-right: 14px;  }

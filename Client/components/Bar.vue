@@ -1,6 +1,6 @@
 <template>
     <div id="bar">
-      <h1>{{ username }}</h1>
+      <i id="reloadButton" v-on:click="reloadClick" class="btn nf nf-mdi-reload"></i>
       <label-select></label-select>
     </div>
 </template>
@@ -10,18 +10,27 @@ import LabelSelect from '../components/LabelSelect.vue';
 
 export default {
   name: 'bar',
-  prop: { user: Object },
+  prop: {  },
   
   components: 
   {
     'label-select': LabelSelect
   },
-
+  
   computed: 
   {
     username: function()
     {
       return "FranzKafque@gmail.com";
+    }
+  },
+
+  methods:
+  {
+    reloadClick: function(event)
+    {
+      // Omit the label argument to have the EmailTable use its current value
+      this.$root.$emit("reloadInbox", null);
     }
   }
 }
@@ -30,19 +39,17 @@ export default {
 
 <style>
 
-h1 
-{ 
-  display: inline-block;
-  font-size: 14px; 
-  padding-right: 20px; 
+#reloadButton
+{
+  font-size: 20px;
 }
 
 #bar
 {
   position: fixed;
-  left: 80%;
   text-align: center;
-  width: 20%;
+  left: 70%;
+  width: 30%;
   height: fit-content;
   
   display: flex;
@@ -51,7 +58,6 @@ h1
   
   align-items: flex-start;
   justify-content: flex-end;
-
 }
 
 </style>

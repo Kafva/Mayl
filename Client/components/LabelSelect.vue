@@ -1,37 +1,49 @@
 <template>
-    <v-select
-        id="labelSelect" 
-        :options="['INBOX','UNREAD','STARRED']" 
-        :value="selected" 
-        @input="setSelected"
-    ></v-select>
+    <select v-model="selected" selected="defaultLabel" @change="setSelected">
+      <option v-for="label in labels" :key="label.id">
+        {{ label }}
+      </option>
+    </select>
 </template>
 
 <script>
 import {CONFIG} from '../src/config.js'
 
-// Custom <select> element component 
-// https://vue-select.org/guide/options.html#options-prop
-import vSelect from 'vue-select';
-
-// Custom version of the packages CSS to have the dropdown work
-import '../src/vue-select.css';
-
 export default {
     name: 'label-select',
-    props: { selected: String },
+    props: {},
+    data: function() {
+        return {
+            labels: CONFIG.labels,
+            defaultLabel: CONFIG.defaultLabel,
+            selected: CONFIG.defaultLabel
+        };
+    },
     
-    components: { vSelect: vSelect },
     methods:
     {
-        setSelected(value)
+        setSelected()
+        // Emit a signal to the EmailTable, notifying it that  
+        // label has changed and that it should reload 
         {
-            console.log(value);
+            this.$root.$emit("reloadInbox", this.selected);
         }
     }
 }
 </script>
 
 <style>
+
+select
+{
+  display: inline-block;
+  background-color: var(--transbkg);
+  color: var(--text);
+  max-width: 120px;
+  text-overflow: ellipsis;
+  margin-left: 10px;
+  overflow: hidden;
+}
+
 </style>
 

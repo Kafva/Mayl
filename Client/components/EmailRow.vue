@@ -1,6 +1,6 @@
 <template>
     <tr :class="rowClassName" @click="emitEmailDisplayEvent">
-        <td :style="collapseCSS">       {{ sender }}         </td>
+        <td>                            {{ sender }}         </td>
         <td>                            {{ thread.snippet }} </td>
         <td :style="collapseCSS">       {{ date }}           </td>
         <td :class="threadIdClassName" hidden>{{ thread.threadId }}            </td>
@@ -41,8 +41,10 @@ export default {
         },
         date: function()
         {
-            return this.thread.emails.length > 0 ? 
+            let date =  this.thread.emails.length > 0 ? 
                 this.thread.emails[0].date : CONFIG.unknown; 
+           
+            return Functions.getDate(date);
         },
     
         collapseCSS: function(){ return Functions.collapseCSS(this.minify); }
@@ -54,13 +56,11 @@ export default {
         {
             console.log("Archive!");
             event.cancelBubble = true;
-            console.log(event);
         },
         deleteMessage: function(event)
         {
-            console.log("Delete!");
+            console.log("Delte!");
             event.cancelBubble = true;
-            console.log(event);
         },
         emitEmailDisplayEvent: function(event)
         {

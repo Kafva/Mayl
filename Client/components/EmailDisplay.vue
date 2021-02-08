@@ -1,12 +1,21 @@
 <template>
 <div id="emailDisplay" :style="collapseCSS">
-    <i class="btn nf nf-mdi-arrow_collapse_left" @click="hide"></i>
+    <i class="btn nf nf-mdi-arrow_collapse_left" @click="hide"></i> 
+    <b>{{ subject }}</b>
     <div v-for="message in messages"
         v-bind:key="message.id">
         <div class="emailBody">
-            <b>{{ message.subject }}</b>
-            <p>{{ message.date }}</p>
-            <div v-html="sanitiseBody(message.body)"></div>
+            <p>{{ getDate(message.date) }}</p>
+            <!-- <div v-html="sanitiseBody(message.body)"></div> -->
+            <iframe 
+                id="emailFrame"
+                height="600" width="700"
+                frameborder="0" 
+                allowtransparency="true"
+                scrolling="yes" 
+                style="background-color: white !important"
+                :src="getURIFromText(message.body)">
+            </iframe> 
         </div>
     </div>
 </div>
@@ -16,6 +25,7 @@
 
 import {CONFIG}  from '../src/config.js';
 import * as Functions  from '../src/functions.js';
+
 
 export default {
     name: 'email-display',
@@ -31,7 +41,12 @@ export default {
     computed: 
     // Hide/Unhide the display when 'minify' changes
     {
-        collapseCSS: function(){ return Functions.collapseCSS(this.minify); }
+        collapseCSS(){ return Functions.collapseCSS(this.minify); },
+        subject()
+        {
+            return this.messages.length > 0 ? this.messages[0].subject :
+                CONFIG.unknown;
+        }
     },
    
     mounted()
@@ -63,22 +78,31 @@ export default {
               // Decode from base64 and then translate \u sequences into actual
               // glyphs with JSON.parse()
               this.messages = JSON.parse(atob(body));
-              console.log(this.messages);
             }
             catch (e) { console.error(e); }
         },
         
         sanitiseBody(body)
-        // Scope any style tags in the HTML of an email
         {
-            return body.replaceAll("<style", "<style scoped");
+            // Note the use of /g for replace all
+            return body.replaceAll(/<style/gi, "<style scoped")
+                .replaceAll(/<script.*<\/script>/gi, "")
+                .replaceAll(/onerror=".*"/gi, "")
+                .replaceAll(/!important/gi, "");
+        },
+
+        getURIFromText(body)
+        {
+            return `data:text/html;charset=utf-8,${encodeURIComponent( this.sanitiseBody(body)  )}`;
         },
 
         hide()
         {
             this.minify = true;
             this.$root.$emit(CONFIG.hideBodiesEvent);
-        }
+        },
+                
+        getDate(date){  return Functions.getDate(date);  },
     }
 }
 </script>
@@ -98,8 +122,8 @@ export default {
     transition: opacity 0.5s linear;
 }
 
-.emailDisplay > i { font-size: 30px; float: right; }
-.emailBody    > b { font-size: 30px; }
+#emailDisplay > i { font-size: 30px; padding-right: 20px; }
+#emailDisplay > b { font-size: 30px; max-width: 500px; }
 
 .emailBody
 {
@@ -108,8 +132,8 @@ export default {
     /* Important to avoid all text from appearing on a single line */
     white-space: wrap;
     overflow-wrap: break-word;
-    width: 70%;
-    height: 20%;
+    width: 100%;
+    height: 100%;
 }
 
 

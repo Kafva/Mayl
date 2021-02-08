@@ -12,5 +12,6 @@ const toggleLoadingWheel = (mode) =>
     document.querySelector(CONFIG.loadingWheelSelector).setAttribute("style", "display: none");
 }
 
+const getDate = (date) => date.replace("T", " ").replace(/\+\d+:\d+/, "");
 
-export{ collapseCSS, toggleLoadingWheel };
+export{ collapseCSS, toggleLoadingWheel, getDate};

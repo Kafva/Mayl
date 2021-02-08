@@ -1,7 +1,7 @@
 <template>
     <table>
         <thead>
-            <th class="nf nf-mdi-mail_ru"       :style="collapseCSS"></th>
+            <th class="nf nf-mdi-mail_ru"      ></th>
             <th class="nf nf-mdi-view_headline"></th>
             <th class="nf nf-mdi-calendar"       :style="collapseCSS"></th>
             <th></th>
@@ -92,7 +92,6 @@ export default {
                 // Decode from base64 and then translate \u sequences into actual
                 // glyphs with JSON.parse()
                 this.threads = JSON.parse( atob(body)  );
-                if(DEBUG) console.log(this.threads);
             }
             catch (e) { console.error(e); }
 

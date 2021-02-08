@@ -161,7 +161,8 @@ namespace Gmail
             try 
             { 
                 // HTTP request to fetch all messages based on a threadId (fairly time consuming)
-                gmailThreadMessages = (List<Message>)this.service.Users.Threads.Get(userId, threadId).Execute().Messages;
+                gmailThreadMessages = (List<Message>)this.service.Users.Threads.Get(
+                    userId, threadId).Execute().Messages;
             }
             catch (Exception e){ Console.Error.WriteLine(e); }
         
@@ -175,6 +176,7 @@ namespace Gmail
         {
             EmailMessage[] threadMessages = new EmailMessage[messages.Count];
             MessagePartHeader[] headers;
+            // Firs index contains raw text and the second contains HTML (if any)
             string messageBody = "";
             DateTime date;
             int index = 0;
@@ -184,7 +186,7 @@ namespace Gmail
             {
                 // Extract the body
                 if(fetchBody) messageBody = extractBodyFromMessage( msg );
-
+                
                 // Determine the relevant header values and create a new EmailMessage object
                 headers = new MessagePartHeader[msg.Payload.Headers.Count]; 
                 msg.Payload.Headers.CopyTo(headers,0);

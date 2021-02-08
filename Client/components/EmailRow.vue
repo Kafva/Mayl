@@ -1,16 +1,17 @@
 <template>
-    <tr class="Item">
-        <td>       {{ sender }}         </td>
-        <td>       {{ thread.snippet }} </td>
-        <td>       {{ date }}           </td>
-        <td hidden>{{ thread.threadId }}</td>
-        <td @click="archiveMessage" class="btn nf nf-mdi-archive">  </td>
+    <tr :class="rowClassName" @click="emitEmailDisplayEvent">
+        <td :style="collapseCSS">       {{ sender }}         </td>
+        <td>                                  {{ thread.snippet }} </td>
+        <td :style="collapseCSS">       {{ date }}           </td>
+        <td :class="threadIdClassName" hidden>{{ thread.threadId }}            </td>
+        <td @click="archiveMessage" class="btn nf nf-mdi-archive">   </td>
         <td @click="deleteMessage"  class="btn nf nf-fa-trash">      </td>
     </tr>
 </template>
 
 <script>
 import { CONFIG } from '../src/config.js';
+import * as Functions  from '../src/functions.js';
 
 export default {
     // Component definitions are similar to root Vue() element definitions but cannot include an 'el:' selector
@@ -22,8 +23,19 @@ export default {
     /* NOTE that HTML attributes are case-insensitve and
     camelCase props should be referenced with their kebab-case equvivalent 
     threadId ==> thread-id */
-    props: { thread: Object },
-    
+    props: { thread: Object, minify: Boolean },
+    data: function (){
+        return {
+            threadIdClassName: CONFIG.threadIdClassName,
+            rowClassName: CONFIG.rowClassName,
+        }
+    },
+   
+    mounted()
+    {
+        if(this.minify) this.collapseCSS = { width: 0 };
+    },
+
     computed:
     {
         sender: function()
@@ -36,7 +48,10 @@ export default {
         {
             return this.thread.emails.length > 0 ? 
                 this.thread.emails[0].date : CONFIG.unknown; 
-        }
+        },
+    
+        collapseCSS: function(){ return Functions.collapseCSS(this.minify); }
+
     },
     methods:
     {
@@ -48,6 +63,18 @@ export default {
         {
             console.log("TODO");
         },
+        emitEmailDisplayEvent: function(event)
+        {
+            // Extract the tr.Item element from the click-event
+            let index = event.path.findIndex( (p) => p.className == CONFIG.rowClassName );
+            if (index != -1)
+            {                
+                // Extract the value of the hidden threadId field and send it with the signal
+                this.$root.$emit(CONFIG.displayBodiesEvent, 
+                    event.path[index].querySelector(`.${CONFIG.threadIdClassName}`).innerText  );
+            }
+            else{ console.error(`Could not find ${CONFIG.rowClassName} in ${event.path}`); }
+        } 
     }
 }
 </script>
@@ -57,8 +84,8 @@ export default {
 {
     opacity: 1.0;
     max-height: 18px;
+    width: fit-content;
     margin-bottom: 5px;
-    
     border-bottom: 1px solid rgba(203, 198, 198, 0.5)
 }
 
@@ -75,7 +102,7 @@ export default {
     /* Set an upper limit for the width of column text in the playlist */
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: 250px;
+    max-width: 200px;
 }
 
 

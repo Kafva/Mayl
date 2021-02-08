@@ -11,7 +11,7 @@ import Bkg from '../assets/background.jpg';
 // The import statements constitute the 'registration' process for components when using webpack
 import Bar from        '../components/Bar.vue';
 import EmailTable from '../components/EmailTable.vue';
-import { CONFIG } from './config';
+import EmailDisplay from '../components/EmailDisplay.vue';
 
 var root = new Vue({
     el: "#root",
@@ -25,5 +25,6 @@ var root = new Vue({
     { 
         bar: Bar,
         'email-table': EmailTable,
+        'email-display': EmailDisplay
     },
 })

@@ -7,10 +7,10 @@
 <script>
 
 import LabelSelect from '../components/LabelSelect.vue';
+import { CONFIG } from '../src/config';
 
 export default {
   name: 'bar',
-  prop: {  },
   
   components: 
   {
@@ -30,7 +30,7 @@ export default {
     reloadClick: function(event)
     {
       // Omit the label argument to have the EmailTable use its current value
-      this.$root.$emit("reloadInbox", null);
+      this.$root.$emit(CONFIG.reloadInboxEvent, null);
     }
   }
 }

@@ -21,11 +21,15 @@
 
     <div id="root">
         <img id="bkg" :src="background"> 
-       
-        <!-- Bind the label element to both the table and the bar -->
         <bar></bar> 
-        <email-table></email-table>
+        <div class="flexMid">
+            <email-table></email-table>
+            <email-display></email-display>
+        </div>
     </div>
+    <!-- To allow for re-alignment in the flexbox we will have
+    root mount-remount the emailDisplay (its not enough to modify the display attribute)
+    TODO -->
     
     <script type="module" src="dist/bundle.js"></script>
 </body>

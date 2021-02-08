@@ -11,15 +11,15 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
   mode: 'development',
-  // We can specify the imports inside app.js instead of listing them here
-  entry: './src/app.js',
+  // We can specify the imports inside index.js instead of listing them here
+  entry: './src/index.js',
   output: {
     path: path.resolve(__dirname) + '/public/dist',
     // This will produce one .js file per entrypoint instead of a single bundle.js
     filename: 'bundle.js'
   },
 
- // Resolve 'vue' in imports from app.js
+ // Resolve 'vue' in imports from index.js
  resolve: {
       alias: { 'vue$': 'vue/dist/vue.esm.js', 'vue-select': 'vue-select/dist/vue-select.js' },
       extensions: ['*', '.js', '.vue', '.json']

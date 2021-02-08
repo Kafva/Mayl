@@ -1,10 +1,13 @@
 <template>
 <div id="emailDisplay" :style="collapseCSS">
+    <i class="btn nf nf-mdi-arrow_collapse_left" @click="hide"></i>
     <div  v-for="message in messages"
         v-bind:key="message.id">
-        <h1>{{ message.subject }}</h1>
-        <i>{{ message.date }}</i>
-        <p class="htmlBody" v-html="message.body"></p>
+        <div class="emailBody">
+            <b>{{ message.subject }}</b>
+            <p>{{ message.date }}</p>
+            <div v-html="sanitiseBody(message.body)"></div>
+        </div>
     </div>
 </div>
 </template>
@@ -17,25 +20,27 @@ import * as Functions  from '../src/functions.js';
 export default {
     name: 'email-display',
     
-    props: { minify: Boolean },
-
     data: function() {
         return {
             threadId: null,
-            messages: [], 
+            messages: [],
+            minify: true, 
         }
+    },
+    
+    computed: 
+    // Hide/Unhide the display when 'minify' changes
+    {
+        collapseCSS: function(){ return Functions.collapseCSS(this.minify); }
     },
    
     mounted()
     { 
         this.$root.$on(CONFIG.displayBodiesEvent, (threadId) =>
-        // TODO let the EmailRow signal root instead and let root mount/remount
-        // the EmailDisplay to align the flexbox
         // Event listener for clicks in the EmailTable
         {
-            // Update the minify property
+            // Update the minify property to display the body
             this.minify = false;
-
 
             this.threadId = threadId;
             this.fetchThreadMessages();
@@ -63,7 +68,17 @@ export default {
             catch (e) { console.error(e); }
         },
         
-        collapseCSS: function(){ return Functions.collapseCSS(this.minify); }
+        sanitiseBody(body)
+        // Scope any style tags in the HTML of an email
+        {
+            return body.replaceAll("<style", "<style scoped");
+        },
+
+        hide()
+        {
+            this.minify = true;
+            this.$root.$emit(CONFIG.hideBodiesEvent);
+        }
     }
 }
 </script>
@@ -71,9 +86,10 @@ export default {
 <style>
 #emailDisplay
 {
-    width: 80%;
+    width: fit-content;
     height: fit-content;
-    display: inline-block;
+    /* Display none by default and change to inline-block when an event is caught */ 
+    display: none;
     
     animation: fadeIn100 0.5s;
 
@@ -82,10 +98,18 @@ export default {
     transition: opacity 0.5s linear;
 }
 
-.htmlBody
+.emailDisplay > i { font-size: 30px; float: right; }
+.emailBody    > b { font-size: 30px; }
+
+.emailBody
 {
-    width: fit-content;
-    height: 30%;
+    display: inline-block;
+    
+    /* Important to avoid all text from appearing on a single line */
+    white-space: wrap;
+    overflow-wrap: break-word;
+    width: 70%;
+    height: 20%;
 }
 
 

@@ -3,7 +3,7 @@
         <thead>
             <th class="nf nf-mdi-mail_ru"       :style="collapseCSS"></th>
             <th class="nf nf-mdi-view_headline"></th>
-            <th class="nf nf-fa-calendar"       :style="collapseCSS"></th>
+            <th class="nf nf-mdi-calendar"       :style="collapseCSS"></th>
             <th></th>
             <th></th>
         </thead>
@@ -29,8 +29,6 @@ export default {
     // Since their implicit root is the <template> 
     name: 'email-table',
     
-    props: {},
-
     components: 
     // Add the EmailRow component as a child
     {
@@ -52,11 +50,9 @@ export default {
 
     mounted()
     { 
-        // Register a listener for the reloadInbox event sent by the <label-select> component
         this.$root.$on(CONFIG.reloadInboxEvent, (newLabel) =>
+        // Register a listener for the reloadInbox event sent by the <label-select> component
         {
-            console.log("Got event!!!");
-                        
             if(newLabel) this.label = newLabel;
             this.fetchThreads(); 
         });
@@ -66,6 +62,13 @@ export default {
         // the change will propogate down to the EmailRow since we pass minify as a prop
         {
             this.minify = true;
+        });
+
+        this.$root.$on(CONFIG.hideBodiesEvent, () =>
+        // Event listener to revert the minification of email entries when the
+        // EmailDisplay is hidden
+        {
+            this.minify = false;
         });
 
         this.fetchThreads(); 
@@ -98,22 +101,20 @@ export default {
 
 <style>
 
-
 table
 {
     display: inline-block;
     width: fit-content;
     height: fit-content;
-    min-height: fit-content;
-    border-collapse: collapse;
     text-align: right;
-
     margin-left: 15px;
     margin-right: 15px;
     padding: 15px;
     
-    animation: fadeIn100 0.5s;
+    /* Important */
+    min-width: 300px;
 
+    animation: fadeIn100 0.5s;
     visibility: visible;
     opacity: 1;
     transition: opacity 0.5s linear;

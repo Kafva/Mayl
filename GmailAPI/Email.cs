@@ -7,7 +7,6 @@ namespace Gmail
         public string subject {get; set;}
         public string body {get; set;}
         public string sender {get; set;}
-        //public string htmlBody {get; set;}
         
         public DateTime date {get; set;}
         
@@ -20,22 +19,6 @@ namespace Gmail
             this.body     = body;
             
         }
-        
-        //private void setBody(string body)
-        //{
-        //    // Split raw text and HTML (if any)
-        //    string[] res = Regex.Split(body, "<!DOCTYPE HTML>", RegexOptions.IgnoreCase);
-        //    if(res.Length > 1)
-        //    {
-        //        this.body = res[0];
-        //        this.htmlBody = "<!DOCTYPE HTML>" + res[1];
-        //    }
-        //    else
-        //    {
-        //        this.body     = body;
-        //        this.htmlBody = "";
-        //    }
-        //}
     }
     
     public class EmailThread

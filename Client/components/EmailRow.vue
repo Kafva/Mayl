@@ -31,11 +31,6 @@ export default {
         }
     },
    
-    mounted()
-    {
-        if(this.minify) this.collapseCSS = { width: 0 };
-    },
-
     computed:
     {
         sender: function()
@@ -57,11 +52,15 @@ export default {
     {
         archiveMessage: function(event)
         {
-            console.log("TODO");
+            console.log("Archive!");
+            event.cancelBubble = true;
+            console.log(event);
         },
         deleteMessage: function(event)
         {
-            console.log("TODO");
+            console.log("Delete!");
+            event.cancelBubble = true;
+            console.log(event);
         },
         emitEmailDisplayEvent: function(event)
         {
@@ -82,6 +81,8 @@ export default {
 <style>
 .Item
 {
+    /* Prevent column text from wrapping around */
+    white-space: nowrap;
     opacity: 1.0;
     max-height: 18px;
     width: fit-content;
@@ -105,5 +106,6 @@ export default {
     max-width: 200px;
 }
 
+td.btn { z-index: 900; }
 
 </style>

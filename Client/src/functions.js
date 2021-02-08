@@ -1,6 +1,6 @@
 const collapseCSS = (minify) =>
 {
-    return minify ? { display: 'none' } : { display: 'auto' }; 
+    return minify ? { display: 'none' } : { display: 'inline-block' }; 
 }
 
 export{ collapseCSS };

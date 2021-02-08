@@ -19,7 +19,6 @@
 { 
     font-family: 'Source Sans Pro', Arial; 
     overflow: scroll; 
-    white-space: nowrap;
     color: var(--text);
 }
 
@@ -42,8 +41,8 @@ body
 .flexMid
 {
     position: absolute;
-    left: 5%;
-    top: 6%;
+    left: 3%;
+    top: 1%;
     width: 100%;
 
     display: flex;

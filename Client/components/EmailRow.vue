@@ -1,7 +1,7 @@
 <template>
     <tr :class="rowClassName" @click="emitEmailDisplayEvent">
         <td :style="collapseCSS">       {{ sender }}         </td>
-        <td>                                  {{ thread.snippet }} </td>
+        <td>                            {{ thread.snippet }} </td>
         <td :style="collapseCSS">       {{ date }}           </td>
         <td :class="threadIdClassName" hidden>{{ thread.threadId }}            </td>
         <td @click="archiveMessage" class="btn nf nf-mdi-archive">   </td>

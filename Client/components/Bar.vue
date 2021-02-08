@@ -1,6 +1,6 @@
 <template>
     <div id="bar">
-      <img :src="loadingWheel" hidden/>
+      <img :src="loadingWheel"/>
       <i id="reloadButton" v-on:click="reloadClick" class="btn nf nf-mdi-reload"></i>
       <label-select></label-select>
     </div>
@@ -8,7 +8,7 @@
 <script>
 
 import LabelSelect from '../components/LabelSelect.vue';
-import LoadingWheel from '../assets/loadingWheel.gif';
+import LoadingWheel from '../assets/loading.gif';
 import { CONFIG } from '../src/config';
 
 export default {
@@ -31,15 +31,13 @@ export default {
     username: function()
     {
       return "FranzKafque@gmail.com";
-    }
+    },
   },
 
   methods:
   {
     reloadClick: function(event)
     {
-      
-      
       // Omit the label argument to have the EmailTable use its current value
       this.$root.$emit(CONFIG.reloadInboxEvent, null);
     }
@@ -52,14 +50,15 @@ export default {
 
 #bar > img
 {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
+  display: none;
+  width:  30px;
+  height: 30px;
   padding-right: 10px;
 }
 
 #reloadButton
 {
+  padding-top: 5px;
   font-size: 20px;
 }
 

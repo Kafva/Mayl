@@ -10,6 +10,8 @@ const CONFIG = Object.freeze(
     hideBodiesEvent: "hideBodies",
     rowClassName: "Item",
     threadIdClassName: "threadId",   
+    loadingWheelSelector: "#bar > img",
+    toggleLoadingWheelEvent: "loadingWheelEvent"
 })
 
 export { CONFIG, DEBUG };

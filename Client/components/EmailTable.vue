@@ -50,11 +50,11 @@ export default {
 
     mounted()
     { 
-        this.$root.$on(CONFIG.reloadInboxEvent, (newLabel) =>
+        this.$root.$on(CONFIG.reloadInboxEvent, async (newLabel) =>
         // Register a listener for the reloadInbox event sent by the <label-select> component
         {
             if(newLabel) this.label = newLabel;
-            this.fetchThreads(); 
+            await this.fetchThreads(); 
         });
         
         this.$root.$on(CONFIG.displayBodiesEvent, () =>
@@ -78,6 +78,8 @@ export default {
     {
         fetchThreads: async function()
         {
+            Functions.toggleLoadingWheel(true);
+            
             let res = await fetch(`/me/mail?label=${this.label}`, {
                 method: "GET",
             });
@@ -93,8 +95,9 @@ export default {
                 if(DEBUG) console.log(this.threads);
             }
             catch (e) { console.error(e); }
-        },
-        
+
+            Functions.toggleLoadingWheel(false);
+        }, 
     }
 }
 </script>

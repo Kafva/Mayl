@@ -1,7 +1,7 @@
 <template>
 <div id="emailDisplay" :style="collapseCSS">
     <i class="btn nf nf-mdi-arrow_collapse_left" @click="hide"></i>
-    <div  v-for="message in messages"
+    <div v-for="message in messages"
         v-bind:key="message.id">
         <div class="emailBody">
             <b>{{ message.subject }}</b>

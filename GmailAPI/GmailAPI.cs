@@ -9,28 +9,36 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace Gmail
 {
+    public enum UpdateAction
+    {
+        UNTAG, TAG, ARCHIVE
+    }
+    
     public interface IGmailAPI<T>
     // Let the GmailAPI class inherit from the interface
     {
         public List<string> getLabels(string userId);
-
+        public List<string> updateThreadStatus(string userId, string threadId, UpdateAction updateAction, string tag="");
         List<T> getThreadsFromLabel(string userId, string label, bool fetchBody=true);
         public EmailMessage[] fetchThreadMessages(string userId, string threadId, bool fetchBody=true);
     }
+
 
     public class GmailAPI : IGmailAPI<EmailThread>
     {
         
         public static readonly string[] scopes = { 
-            GmailService.Scope.GmailReadonly, 
-            GmailService.Scope.MailGoogleCom, 
-            GmailService.Scope.GmailModify 
+            GmailService.Scope.GmailModify, 
+            GmailService.Scope.GmailLabels, 
+            GmailService.Scope.MailGoogleCom,
         };
-            
+        
+        private const string UNREAD_LABEL = "UNREAD";
+        private const string TRASH_LABEL = "TRASH";
+        private const int maxLabelCount = 50;
         public const string secretPath   = "./secret/";
         public const string tokenDirname = "token";
         public const string credFilename = "credentials.json";
@@ -57,6 +65,9 @@ namespace Gmail
         }
         private void setupCredentials()
         {
+            // To reinitalise the credentials, remove secrets/credentials.json and once this method is called
+            // a prompt will be generated SERVER-SIDE for authn of the app
+
             if ( Directory.Exists(GmailAPI.secretPath) )
             {
                 if ( !Directory.Exists(GmailAPI.secretPath + GmailAPI.tokenDirname) )
@@ -81,7 +92,6 @@ namespace Gmail
             }
             else { throw new DirectoryNotFoundException("Missing path: " + GmailAPI.secretPath); }
         }
-        
         public List<string> getLabels(string userId)
         {
             List<Label> gmailLabels = new List<Label>(); 
@@ -96,6 +106,48 @@ namespace Gmail
             gmailLabels.ForEach( (Label l) => labels.Add(l.Name) );
             return labels;
         }
+        
+        public List<string> updateThreadStatus(string userId, string threadId, UpdateAction updateAction, string tag="")
+        {
+            // Note that every thread belongs to exactly 1 category, archiving or trashing a message
+            // won't remove the category, adding a new category will remove the old one however
+
+            bool ret = false;
+            List<string> arr = new List<string>();
+            
+            switch(updateAction)
+            {
+                case UpdateAction.ARCHIVE:
+                    // Remove all tags from the thread to 'archive' it 
+                    ret = this.removeLabelsFromThread(userId, threadId, 
+                            this.getLabelsOfThread(userId, threadId) );
+                    break;
+                case UpdateAction.UNTAG:
+                    // Remove the given tag (should it exist)
+                    if( !this.getLabels(userId).Contains(tag) )
+                        Console.Error.WriteLine("Unknown tag: " + tag);
+                    else
+                    {
+                        arr.Add(tag);
+                        ret = this.removeLabelsFromThread(userId, threadId, arr);
+                    }
+                    break;
+                case UpdateAction.TAG:
+                    // Add the given tag (should it exist)
+                    if( !this.getLabels(userId).Contains(tag) )
+                        Console.Error.WriteLine("Unknown tag: " + tag);
+                    else
+                    {
+                        arr.Add(tag);
+                        ret = this.addLabelsToThread(userId, threadId, arr);
+                    }
+                    break;
+            }
+
+            var res = this.getLabelsOfThread(userId,threadId);
+            return res;
+        }
+
         public List<EmailThread> getThreadsFromLabel(string userId, string label, bool fetchBody=true)
         {
             // With all threads fetched retrieve the metadata and payload of the corresponding messages
@@ -152,25 +204,7 @@ namespace Gmail
         } 
         public EmailMessage[] fetchThreadMessages(string userId, string threadId, bool fetchBody=true)
         {
-            // Initalize for base case return value
-            List<Message> gmailThreadMessages = new List<Message>();
-            
-            #if _DEBUG
-                Console.WriteLine(string.Format("Fetching: {0}", threadId ));
-            #endif
-            try 
-            { 
-                // HTTP request to fetch all messages based on a threadId (fairly time consuming)
-                gmailThreadMessages = (List<Message>)this.service.Users.Threads.Get(
-                    userId, threadId).Execute().Messages;
-            }
-            catch (Exception e){ Console.Error.WriteLine(e); }
-        
-            #if _DEBUG
-                Console.WriteLine(string.Format("Completed: {0}", threadId));
-            #endif
-            
-            return parseMessages(gmailThreadMessages, fetchBody);;
+            return parseMessages( fetchGmailThreadMessages(userId, threadId), fetchBody);;
         }
         private EmailMessage[] parseMessages(List<Message> messages, bool fetchBody=true)
         {
@@ -206,6 +240,119 @@ namespace Gmail
         }
 
         //***********************************************//
+        
+        public bool addLabelsToThread(string userId, string threadId, List<string> labelIds)
+        {
+            // The /users/{userId}/threads/{id}/modify endpoint takes labels to add or remove
+            // as a list argument via the POST body, to 'archive' a message we remove all tags
+            // and to 'trash' a message we add the TRASH tag (this will prevent it from
+            // appearing in any other tags its still a member of)
+            ModifyThreadRequest body = new ModifyThreadRequest();
+            body.AddLabelIds = labelIds;
+            
+            // Create and execute the HTTP request
+            UsersResource.ThreadsResource.ModifyRequest request = this.service.Users.Threads
+                .Modify(body, userId, threadId);            
+            try
+            {
+                request.Execute();
+                return true;
+            }
+            catch(Google.GoogleApiException e)
+            { 
+                Console.Error.WriteLine(e); 
+                return false;
+            }
+        } 
+
+        private bool removeLabelsFromThread(string userId, string threadId, List<string> labelIds)
+        {
+            ModifyThreadRequest body = new ModifyThreadRequest();
+            body.RemoveLabelIds = labelIds;
+            
+            // Create and execute the HTTP request
+            UsersResource.ThreadsResource.ModifyRequest request = this.service.Users.Threads
+                .Modify(body, userId, threadId);  
+            try
+            {
+                request.Execute();
+                return true;
+            }
+            catch(Google.GoogleApiException e)
+            { 
+                Console.Error.WriteLine(e); 
+                return false;
+            }
+        } 
+        
+        private List<string> getLabelsOfThread(string userId, string threadId)
+        {
+            // Note that if a label is missing from at least one message it won't
+            // be included in the result!
+
+            List<string> labels = new List<string>();
+            string[]    _labels = new string[maxLabelCount];
+            
+            List<Message> gmailThreadMessages = fetchGmailThreadMessages(userId, threadId); 
+            foreach( Message m in gmailThreadMessages )
+            // We will recieve an error if we try to remove a label that does not exist for the
+            // the thread and therefore need to determine which labels are shared between all messages
+            {
+                if (labels.Count == 0)
+                {
+                    labels.AddRange( m.LabelIds );
+                    labels.CopyTo(_labels);
+                    continue;
+                }
+
+                foreach (string l in _labels)
+                // Each label not present in '_labels' should be removed from 'labels'
+                // with this approach we are least likely to throw an exception
+                // We iterate over the static _labels instead of the list which is being manipulated 
+                {
+                    if ( l == null ) continue;
+                    
+                    if ( ! m.LabelIds.Contains(l) )
+                    { 
+                        #if _DEBUG
+                            Console.WriteLine(String.Format("Missing label in (message={0}) : '{1}' in (thread={2})", m.Id, l, threadId));
+                        #endif
+                        labels.Remove(l);
+                    }
+                }
+
+                labels.CopyTo(_labels);
+            }
+            #if _DEBUG
+                Console.WriteLine("Labels for " + threadId);
+                foreach(string l in labels){ Console.WriteLine("\t"+l); }
+            #endif
+            
+            return labels;
+        }
+
+        private List<Message> fetchGmailThreadMessages(string userId, string threadId)
+        {
+            // Initalize for base case return value
+            List<Message> gmailThreadMessages = new List<Message>();
+            
+            #if _DEBUG
+                Console.WriteLine(string.Format("Fetching: {0}", threadId ));
+            #endif
+            try 
+            { 
+                // HTTP request to fetch all messages based on a threadId (fairly time consuming)
+                gmailThreadMessages = (List<Message>)this.service.Users.Threads.Get(
+                    userId, threadId).Execute().Messages;
+            }
+            catch (Exception e){ Console.Error.WriteLine(e); }
+        
+            #if _DEBUG
+                Console.WriteLine(string.Format("Completed: {0}", threadId));
+            #endif
+
+            return gmailThreadMessages;
+        }
         private DateTime parseDateFromEmailHeaders(MessagePartHeader[] headers)
         {
             string _date = "";

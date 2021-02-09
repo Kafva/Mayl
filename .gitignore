@@ -30,3 +30,4 @@ untracked/*
 obj/*
 */obj/*
 **/dist/*
+ConsoleDebug/*

@@ -4,7 +4,13 @@ const CONFIG = Object.freeze(
     unknown: "Unknown",
     defaultLabel: 'STARRED',
     // Derived from gmailAPI.getLabels()
-    labels: ["CHAT", "SENT", "INBOX", "IMPORTANT", "TRASH", "DRAFT", "SPAM", "CATEGORY_FORUMS", "CATEGORY_UPDATES", "CATEGORY_PERSONAL", "CATEGORY_PROMOTIONS", "CATEGORY_SOCIAL", "STARRED", "UNREAD"],
+    labels: 
+    // Note that every thread belongs to exactly 1 category
+    // Also, if a thread has been tagged with TRASH it won't appear in any other tags
+    [
+        "CHAT", "SENT", "INBOX", "IMPORTANT", "TRASH", "DRAFT", "SPAM", "STARRED", "UNREAD", 
+        "CATEGORY_FORUMS", "CATEGORY_UPDATES", "CATEGORY_PERSONAL", "CATEGORY_PROMOTIONS", "CATEGORY_SOCIAL", 
+    ],
     displayBodiesEvent: "displayBodies",
     reloadInboxEvent: "reloadInbox",
     hideBodiesEvent: "hideBodies",

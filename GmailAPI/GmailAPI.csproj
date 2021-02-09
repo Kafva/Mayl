@@ -6,6 +6,7 @@
   
   <ItemGroup>
     <PackageReference Include="google.apis.gmail.v1" Version="1.49.0.2202" />
+    <PackageReference Include="ObjectDumper.NET" Version="3.0.20251.1" />
   </ItemGroup>
 
 </Project>

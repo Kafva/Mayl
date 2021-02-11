@@ -14,6 +14,8 @@ namespace Web.Dispatchs
         public const string MAIL_ENDPOINT = "mail";
         public const string THREAD_ENDPOINT = "thread";
         public const string LABELS_ENDPOINT = "labels";
+        public const string UNTAG_ENDPOINT = "untag";
+        public const string TRASH_ENDPOINT = "trash";
         public Dispatch(){}
         public async Task routeDispatcher(HttpContext httpContext, string dispatch )
         // Action is used instead of Func when the passed function doesn't have a return value 
@@ -31,6 +33,12 @@ namespace Web.Dispatchs
                         break;
                     case Dispatch.LABELS_ENDPOINT:
                         await this.labelsDispatch(httpContext,userId.ToString());
+                        break;
+                    case Dispatch.UNTAG_ENDPOINT:
+                        await this.untagDispatch(httpContext,userId.ToString());
+                        break;
+                    case Dispatch.TRASH_ENDPOINT:
+                        await this.trashDispatch(httpContext,userId.ToString());
                         break;
                     default:
                         await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE);
@@ -97,6 +105,44 @@ namespace Web.Dispatchs
                     JsonSerializer.SerializeToUtf8Bytes(labels), Base64FormattingOptions.None
                 )
             );
+        }
+        
+        private async Task untagDispatch(HttpContext httpContext, string userId)
+        {
+            StringValues threadId = "";
+            StringValues tag = "";
+
+            if ( httpContext.Request.Query.TryGetValue("id", out threadId) )
+            {
+                if ( httpContext.Request.Query.TryGetValue("tag", out tag) )
+                {
+                    // Fetch the single-instance GmailAPI service of the app 
+                    var services = httpContext.RequestServices;
+                    var gmailAPI = (IGmailAPI<EmailThread>)services.GetService(typeof(IGmailAPI<EmailThread>)); 
+                    
+                    // Remove the given label and return true/false based on if the operation was successful
+                    var labels = gmailAPI.updateThreadStatus(userId, threadId, UpdateAction.UNTAG, tag);
+                    await httpContext.Response.WriteAsync( (!labels.Contains(tag)).ToString() );
+                }
+                else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
+            }
+            else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
+        }
+        private async Task trashDispatch(HttpContext httpContext, string userId)
+        {
+            StringValues threadId = "";
+
+            if ( httpContext.Request.Query.TryGetValue("id", out threadId) )
+            {
+                // Fetch the single-instance GmailAPI service of the app 
+                var services = httpContext.RequestServices;
+                var gmailAPI = (IGmailAPI<EmailThread>)services.GetService(typeof(IGmailAPI<EmailThread>)); 
+                
+                // Add the TRASH label and return true/false based on if the operation was successful
+                var labels = gmailAPI.updateThreadStatus(userId, threadId, UpdateAction.TAG, GmailAPI.TRASH_LABEL);
+                await httpContext.Response.WriteAsync( labels.Contains(GmailAPI.TRASH_LABEL).ToString() );
+            }
+            else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
         }
         
    }

@@ -37,7 +37,7 @@ namespace Gmail
         };
         
         private const string UNREAD_LABEL = "UNREAD";
-        private const string TRASH_LABEL = "TRASH";
+        public const string TRASH_LABEL = "TRASH";
         private const int maxLabelCount = 50;
         public const string secretPath   = "./secret/";
         public const string tokenDirname = "token";
@@ -144,8 +144,7 @@ namespace Gmail
                     break;
             }
 
-            var res = this.getLabelsOfThread(userId,threadId);
-            return res;
+            return this.getLabelsOfThread(userId,threadId);
         }
 
         public List<EmailThread> getThreadsFromLabel(string userId, string label, bool fetchBody=true)

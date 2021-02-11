@@ -69,6 +69,18 @@ namespace Web
                 // Endpoint for fetching all labels
                 endpoints.MapGet("/{userId}/" + Dispatch.LABELS_ENDPOINT, httpContext => 
                     dispatch.routeDispatcher(httpContext, Dispatch.LABELS_ENDPOINT) ); 
+                
+                // Endpoint for untagging of threads
+                // ?id=(threadId)
+                // ?tag=(string)
+                endpoints.MapGet("/{userId}/" + Dispatch.UNTAG_ENDPOINT, httpContext => 
+                    dispatch.routeDispatcher(httpContext, Dispatch.UNTAG_ENDPOINT) ); 
+                
+                // Endpoint for moving a thread to the trash
+                // ?id=(threadId)
+                endpoints.MapGet("/{userId}/" + Dispatch.TRASH_ENDPOINT, httpContext => 
+                    dispatch.routeDispatcher(httpContext, Dispatch.TRASH_ENDPOINT) ); 
+
             });
         }
 

@@ -3,9 +3,9 @@
         <td>                            {{ sender }}         </td>
         <td>                            {{ thread.snippet }} </td>
         <td :style="collapseCSS">       {{ date }}           </td>
-        <td :class="threadIdClassName" hidden>{{ thread.threadId }}            </td>
-        <td @click="archiveMessage" class="btn nf nf-mdi-archive">   </td>
-        <td @click="deleteMessage"  class="btn nf nf-fa-trash">      </td>
+        <td :class="threadIdClassName" hidden>{{ thread.threadId }}     </td>
+        <td @click="untagMessage"   class="btn nf nf-mdi-tag_remove">   </td>
+        <td @click="deleteMessage"  class="btn nf nf-fa-trash">         </td>
     </tr>
 </template>
 
@@ -52,7 +52,7 @@ export default {
     },
     methods:
     {
-        archiveMessage: function(event)
+        untagMessage: function(event)
         {
             console.log("Archive!");
             event.cancelBubble = true;

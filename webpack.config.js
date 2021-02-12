@@ -12,9 +12,9 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 module.exports = {
   mode: 'development',
   // We can specify the imports inside index.js instead of listing them here
-  entry: './src/index.js',
+  entry: './Client/src/index.js',
   output: {
-    path: path.resolve(__dirname) + '/public/dist',
+    path: path.resolve(__dirname) + '/Client/public/dist',
     // This will produce one .js file per entrypoint instead of a single bundle.js
     filename: 'bundle.js'
   },

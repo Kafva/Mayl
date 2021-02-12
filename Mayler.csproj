@@ -10,7 +10,7 @@
   
   <!-- Compile client side Javascript before each build -->
   <Target Name="Generate dist" BeforeTargets="BeforeBuild">
-    <Exec Command="./genDist.sh" WorkingDirectory="Client" />
+    <Exec Command="./scripts/genDist.sh" WorkingDirectory="." />
   </Target> 
     
   <ItemGroup>

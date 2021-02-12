@@ -54,12 +54,12 @@ export default {
     {
         untagMessage: function(event)
         {
-            console.log("Archive!");
+            console.log("Untag!");
             event.cancelBubble = true;
         },
         deleteMessage: function(event)
         {
-            console.log("Delte!");
+            console.log("Delete!");
             event.cancelBubble = true;
         },
         emitEmailDisplayEvent: function(event)

@@ -80,6 +80,10 @@ namespace Web
                 // ?id=(threadId)
                 endpoints.MapGet("/{userId}/" + Dispatch.TRASH_ENDPOINT, httpContext => 
                     dispatch.routeDispatcher(httpContext, Dispatch.TRASH_ENDPOINT) ); 
+                
+                // Endpoint for listing all available accounts
+                endpoints.MapGet("/" + Dispatch.ACCOUNTS_ENDPOINT, httpContext => 
+                    dispatch.routeDispatcher(httpContext, Dispatch.ACCOUNTS_ENDPOINT) ); 
 
             });
         }

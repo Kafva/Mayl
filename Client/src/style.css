@@ -71,3 +71,14 @@ body
     from { opacity: 0; }
     to   { opacity: 1; }
 }
+
+select
+{
+    display: inline-block;
+    background-color: var(--transbkg);
+    color: var(--text);
+    width: fit-content;
+    max-width: 120px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

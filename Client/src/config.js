@@ -2,6 +2,8 @@ const DEBUG = false;
 const CONFIG = Object.freeze(
 {
     unknown: "Unknown",
+    waitDelayMs: 100,
+    
     defaultLabel: 'STARRED',
     // Derived from gmailAPI.getLabels()
     labels: 
@@ -16,6 +18,8 @@ const CONFIG = Object.freeze(
     hideBodiesEvent: "hideBodies",
     rowClassName: "Item",
     threadIdClassName: "threadId",   
+    labelSelector: "#labelSelect",
+    accountSelector: "#accountSelect",
     loadingWheelSelector: "#bar > img",
     toggleLoadingWheelEvent: "loadingWheelEvent"
 })

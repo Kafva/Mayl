@@ -50,10 +50,12 @@ export default {
 
     mounted()
     { 
-        this.$root.$on(CONFIG.reloadInboxEvent, async (newLabel) =>
-        // Register a listener for the reloadInbox event sent by the <label-select> component
+        this.$root.$on(CONFIG.reloadInboxEvent, async (newAccount, newLabel) =>
+        // Register a listener for the reloadInbox event sent by 
+        // the <label-select> / <account-select> components
         {
-            if(newLabel) this.label = newLabel;
+            if(newAccount != "") this.account = newAccount;
+            if(newLabel != "")   this.label   = newLabel;
             await this.fetchThreads(); 
         });
         
@@ -80,7 +82,15 @@ export default {
         {
             Functions.toggleLoadingWheel(true);
             
-            let res = await fetch(`/me/mail?label=${this.label}`, {
+            let account = null;
+            while( (account = Functions.getSelected(CONFIG.accountSelector)) == CONFIG.unknown  )
+            // Wait until the Bar sets the account
+            {
+                console.log("Waiting for account...");
+                await new Promise(r => setTimeout(r, CONFIG.waitDelayMs));
+            }
+            
+            let res = await fetch(`/${account}/mail?label=${this.label}`, {
                 method: "GET",
             });
             
@@ -92,6 +102,7 @@ export default {
                 // Decode from base64 and then translate \u sequences into actual
                 // glyphs with JSON.parse()
                 this.threads = JSON.parse( atob(body)  );
+                console.log(`Fetched ${this.threads.length} threads`);
             }
             catch (e) { console.error(e); }
 

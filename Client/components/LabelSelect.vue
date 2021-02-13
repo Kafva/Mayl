@@ -1,5 +1,5 @@
 <template>
-    <select v-model="selected" selected="defaultLabel" @change="emitEmailTableEvent">
+    <select id="labelSelect" v-model="selected" @change="emitEmailTableEvent">
       <option v-for="label in labels" :key="label.id">
         {{ label }}
       </option>
@@ -15,7 +15,6 @@ export default {
     data: function() {
         return {
             labels: CONFIG.labels,
-            defaultLabel: CONFIG.defaultLabel,
             selected: CONFIG.defaultLabel
         };
     },
@@ -26,24 +25,15 @@ export default {
         // Emit a signal to the EmailTable, notifying it that  
         // label has changed and that it should reload 
         {
-          this.$root.$emit(CONFIG.reloadInboxEvent, this.selected);
+          this.$root.$emit(CONFIG.reloadInboxEvent, "",  this.selected);
         }
     }
 }
 </script>
 
-<style>
-
+<style scoped>
 select
 {
-  display: inline-block;
-  background-color: var(--transbkg);
-  color: var(--text);
-  max-width: 120px;
-  text-overflow: ellipsis;
-  margin-left: 10px;
-  overflow: hidden;
+  margin-left: 15px;
 }
-
 </style>
-

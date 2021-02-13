@@ -54,13 +54,14 @@ export default {
     {
         untagMessage: function(event)
         {
-            console.log("Untag!");
             event.cancelBubble = true;
+            Functions.manageTagOfThread(event, "untag"); 
         },
-        deleteMessage: function(event)
+        deleteMessage: function (event)
         {
-            console.log("Delete!");
+            // Avoid the parent elements click handler from triggering
             event.cancelBubble = true;
+            Functions.manageTagOfThread(event, "trash");
         },
         emitEmailDisplayEvent: function(event)
         {

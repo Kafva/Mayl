@@ -3,11 +3,13 @@
       <img :src="loadingWheel"/>
       <i id="reloadButton" v-on:click="reloadClick" class="btn nf nf-mdi-reload"></i>
       <label-select></label-select>
+      <account-select></account-select>
     </div>
 </template>
 <script>
 
 import LabelSelect from '../components/LabelSelect.vue';
+import AccountSelect from '../components/AccountSelect.vue';
 import LoadingWheel from '../assets/loading.gif';
 import { CONFIG } from '../src/config';
 
@@ -16,7 +18,8 @@ export default {
   
   components: 
   {
-    'label-select': LabelSelect
+    'label-select': LabelSelect,
+    'account-select': AccountSelect
   },
   
   data: function()
@@ -26,20 +29,12 @@ export default {
     }
   },
 
-  computed: 
-  {
-    username: function()
-    {
-      return "FranzKafque@gmail.com";
-    },
-  },
-
   methods:
   {
     reloadClick: function(event)
     {
       // Omit the label argument to have the EmailTable use its current value
-      this.$root.$emit(CONFIG.reloadInboxEvent, null);
+      this.$root.$emit(CONFIG.reloadInboxEvent, "", "");
     }
   }
 }

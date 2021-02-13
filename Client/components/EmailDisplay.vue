@@ -122,8 +122,8 @@ export default {
     transition: opacity 0.5s linear;
 }
 
-#emailDisplay > i { font-size: 30px; padding-right: 20px; }
-#emailDisplay > b { font-size: 30px; max-width: 500px; }
+#emailDisplay > i { display: inline-block; font-size: 30px; padding-right: 20px; }
+#emailDisplay > b { display: inline-block; font-size: 30px; max-width: 500px; }
 
 .emailBody
 {

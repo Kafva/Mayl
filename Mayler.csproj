@@ -5,12 +5,12 @@
     <TargetFramework>net5.0</TargetFramework>
     
     <!-- Note that we need to exclude certain directories from the build process -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);client/node_modules/**;obj/**;untracked/**;GmailAPI/**;Tests/**;ConsoleDebug/**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);node_modules/**;obj/**;untracked/**;GmailAPI/**;Tests/**;ConsoleDebug/**</DefaultItemExcludes>
   </PropertyGroup>
   
   <!-- Compile client side Javascript before each build -->
   <Target Name="Generate dist" BeforeTargets="BeforeBuild">
-    <Exec Command="./scripts/genDist.sh" WorkingDirectory="." />
+    <Exec Command="./scripts/genDist.sh" WorkingDirectory="." StandardErrorImportance="high"/>
   </Target> 
     
   <ItemGroup>

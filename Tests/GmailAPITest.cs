@@ -51,7 +51,7 @@ namespace Gmail.UnitTests
         [Fact]
         private void Test_fetchThreadMessages_Exception()
         {
-            var messages = this.gmailAPI.fetchThreadMessages("me", "1111");
+            var messages = this.gmailAPI.fetchThreadMessages(Constant.userId, "1111");
             Assert.Empty(messages);
         }
         

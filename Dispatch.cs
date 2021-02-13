@@ -5,15 +5,19 @@ using Gmail;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
+using System.Collections.Generic;
+
 
 namespace Web.Dispatchs
 {
    public class Dispatch
    {
+        public const string ACCOUNTS_FILE = "./secret/accounts.txt";
         public const string EMPTY_RESPONSE = "[]";
         public const string MAIL_ENDPOINT = "mail";
         public const string THREAD_ENDPOINT = "thread";
         public const string LABELS_ENDPOINT = "labels";
+        public const string ACCOUNTS_ENDPOINT = "accounts";
         public const string UNTAG_ENDPOINT = "untag";
         public const string TRASH_ENDPOINT = "trash";
         public Dispatch(){}
@@ -22,6 +26,8 @@ namespace Web.Dispatchs
         {
             object userId; 
             if( httpContext.Request.RouteValues.TryGetValue("userId", out userId) )
+            // All endpoints except /accounts require the userId route value
+            // (and are sent in base64)
             {
                 switch(dispatch)
                 {
@@ -45,7 +51,14 @@ namespace Web.Dispatchs
                         break;
                 } 
             } 
-            else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
+            else 
+            { 
+                if(dispatch == Dispatch.ACCOUNTS_ENDPOINT)
+                {
+                    await this.accountsDispatch(httpContext);
+                }
+                else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
+            }
         }
 
         //************* REST Dispatchs ************//
@@ -106,6 +119,10 @@ namespace Web.Dispatchs
                 )
             );
         }
+        private async Task accountsDispatch(HttpContext httpContext)
+        {
+            await httpContext.Response.WriteAsync( this.getAccounts() );
+        }
         
         private async Task untagDispatch(HttpContext httpContext, string userId)
         {
@@ -144,6 +161,25 @@ namespace Web.Dispatchs
             }
             else { await httpContext.Response.WriteAsync(Dispatch.EMPTY_RESPONSE); }
         }
-        
+
+
+        private string getAccounts()
+        // Returns a comma seperated string of the available accounts
+        {
+            var accounts = new List<string>();  
+            string line;
+              
+            // Read the file and display it line by line.  
+            System.IO.StreamReader file = new System.IO.StreamReader(Dispatch.ACCOUNTS_FILE);  
+            
+            while((line = file.ReadLine()) != null) 
+            {  
+                accounts.Add(line);
+            }  
+              
+            file.Close();  
+            
+            return string.Join(",", accounts.ToArray());
+        }    
    }
 }

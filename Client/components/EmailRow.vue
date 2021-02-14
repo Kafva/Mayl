@@ -101,10 +101,10 @@ export default {
 
 .Item > td
 {
-    /* Set an upper limit for the width of column text in the playlist */
+    /* Set an upper limit for the width of column text */
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: 200px;
+    max-width: 250px;
 }
 
 td.btn { z-index: 900; }

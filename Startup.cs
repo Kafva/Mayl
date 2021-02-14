@@ -1,14 +1,11 @@
-using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Gmail;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 using Web.Dispatchs; 
+using Utils;
 
 namespace Web
 {
@@ -26,27 +23,21 @@ namespace Web
             //  * Scoped objects are the same within a request, but different across different requests.
             //  * Singleton objects are the same for every object and every request. 
             
-            services.AddSingleton<IGmailAPI<EmailThread>, GmailAPI>( 
-                _ => new GmailAPI(Program.applicationName, GmailAPI.scopes)
+            // Create a singleton service which holds one GmailAPI instance per account
+            services.AddSingleton<GmailInstanceContainer>( 
+                _ => new GmailInstanceContainer( Util.getAccounts() )
             );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         {
-            //if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
-            
             app.UseStaticFiles();
 
             app.UseRouting();
             
             app.UseEndpoints(endpoints =>
             {
-                // The filenames of the .cshtml pages under ./Pages/
-                // will act as routes for the Razor pages
-                //endpoints.MapRazorPages();
-
-
                 endpoints.MapGet("/", async httpContext =>
                 {
                    httpContext.Response.Headers.Append("Content-Type", "text/html");

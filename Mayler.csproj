@@ -5,7 +5,7 @@
     <TargetFramework>net5.0</TargetFramework>
     
     <!-- Note that we need to exclude certain directories from the build process -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);node_modules/**;obj/**;untracked/**;GmailAPI/**;Tests/**;ConsoleDebug/**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);node_modules/**;obj/**;untracked/**;GmailAPI/**;Tests/**;ConsoleDebug/**;RegisterAccount/**;Util/**</DefaultItemExcludes>
   </PropertyGroup>
   
   <!-- Compile client side Javascript before each build -->
@@ -15,6 +15,10 @@
     
   <ItemGroup>
 	  <ProjectReference Include="./GmailAPI/GmailAPI.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+	  <ProjectReference Include="./Util/Util.csproj" />
   </ItemGroup>
 
 </Project>

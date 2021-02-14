@@ -13,8 +13,6 @@ namespace Web
 {
     public class Program
     {
-        public const string applicationName = "Mayler";
-
         public static void Main(string[] args)
         {   
             CreateHostBuilder(args).Build().Run();

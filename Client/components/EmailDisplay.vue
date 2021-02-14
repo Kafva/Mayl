@@ -66,7 +66,7 @@ export default {
     {
         fetchThreadMessages: async function()
         {
-            let res = await fetch(`/me/thread?id=${this.threadId}`, {
+            let res = await fetch(`/${Functions.getSelected(CONFIG.accountSelector)}/thread?id=${this.threadId}`, {
                 method: "GET",
             });
             

@@ -20,7 +20,7 @@
 
 <script>
 
-import {CONFIG, DEBUG}  from '../src/config.js';
+import {CONFIG}  from '../src/config.js';
 import * as Functions  from '../src/functions.js';
 import EmailRow from '../components/EmailRow.vue';
 

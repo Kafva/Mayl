@@ -65,7 +65,7 @@ namespace Gmail
             GmailService.Scope.MailGoogleCom,
         };
         
-        public static readonly string APPLICATION_NAME = "Mayler";
+        public static readonly string APPLICATION_NAME = "Mayl";
         private const string UNREAD_LABEL = "UNREAD";
         public const string TRASH_LABEL = "TRASH";
         private const int maxLabelCount = 50;
@@ -400,7 +400,7 @@ namespace Gmail
             // Attempt to sanitize the date and parse it
             { 
                 _date = Array.Find( headers, (MessagePartHeader h) => h.Name == "Date" ).Value;
-                _date = Regex.Replace(_date, Regex.Escape("(") + "(UTC|PST|GMT|CET).*" + Regex.Escape(")") + ".*", "");
+                _date = Regex.Replace(_date, Regex.Escape("(") + "(UTC|PST|GMT|CET|BST).*" + Regex.Escape(")") + ".*", "");
                 date = DateTime.Parse(_date); 
             }
             catch(Exception e)

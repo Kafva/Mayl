@@ -104,7 +104,7 @@ export default {
     /* Set an upper limit for the width of column text */
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: 250px;
+    max-width: 210px;
 }
 
 td.btn { z-index: 900; }

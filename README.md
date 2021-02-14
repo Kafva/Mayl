@@ -12,11 +12,11 @@
 
 ## Add Gmail accounts
 Switch to `./RegisterAccount` and execute 
-```bash
+```
 dotnet run <your-account@gmail.com> 
 ```
 This will produce an authentication prompt in your browser which upon successful completion will produce a token at `./secret/<your-account>_token/`. To verify that the connection was successfully established run
-```bash
+```
 dotnet run -t <your-account@gmail.com> 
 ```
 If the connection was successful add the account to `./secret/accounts.txt` (newline separated).
@@ -25,6 +25,9 @@ If the connection was successful add the account to `./secret/accounts.txt` (new
 
 ## Run the app
 ```bash
+# Install nvm if needed
+nvm use node
+npm install
 dotnet run
 ```
 

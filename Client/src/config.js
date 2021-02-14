@@ -1,4 +1,3 @@
-const DEBUG = false;
 const CONFIG = Object.freeze(
 {
     unknown: "Unknown",
@@ -24,4 +23,4 @@ const CONFIG = Object.freeze(
     toggleLoadingWheelEvent: "loadingWheelEvent"
 })
 
-export { CONFIG, DEBUG };
+export {CONFIG};

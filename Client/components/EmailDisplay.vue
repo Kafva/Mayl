@@ -6,7 +6,6 @@
         v-bind:key="message.id">
         <div class="emailBody">
             <p>{{ message.date }}</p>
-            <!-- <div v-html="sanitiseBody(message.body)"></div> -->
             <iframe 
                 id="emailFrame"
                 height="600" width="700"
@@ -23,8 +22,8 @@
 
 <script>
 
-import {CONFIG}  from '../src/config.js';
-import * as Functions  from '../src/functions.js';
+import {CONFIG}       from '../src/config.js';
+import * as Functions from '../src/functions.js';
 
 
 export default {

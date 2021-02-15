@@ -2,7 +2,6 @@
 //  npx webpack bundle --config webpack.config.js
 //  <==>
 //  npm run build
-// do not install webpack globally
 
 // webpack is a tool which enables JS written with require() syntax to be
 // compiled into a dist/ version, i.e. "a static module bundler for modern JavaScript applications"

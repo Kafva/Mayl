@@ -1,17 +1,14 @@
 const CONFIG = Object.freeze(
 {
     unknown: "Unknown",
+    
+    // Delay between checks when waiting for the current account to be set by AccountSelect.vue
     waitDelayMs: 100,
     
-    defaultLabel: 'INBOX',
-    // Derived from gmailAPI.getLabels()
-    labels: 
     // Note that every thread belongs to exactly 1 category
     // Also, if a thread has been tagged with TRASH it won't appear in any other tags
-    [
-        "CHAT", "SENT", "INBOX", "IMPORTANT", "TRASH", "DRAFT", "SPAM", "STARRED", "UNREAD", 
-        "CATEGORY_FORUMS", "CATEGORY_UPDATES", "CATEGORY_PERSONAL", "CATEGORY_PROMOTIONS", "CATEGORY_SOCIAL", 
-    ],
+    
+    defaultLabel: 'INBOX',
     displayBodiesEvent: "displayBodies",
     reloadInboxEvent: "reloadInbox",
     hideBodiesEvent: "hideBodies",

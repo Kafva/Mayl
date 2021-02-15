@@ -7,7 +7,7 @@ namespace Gmail.UnitTests
     struct Constant
     {
         public const string threadId = "1772f0c19a53628c"; 
-        public const string userId = "me"; 
+        public const string userId = "<TODO>"; 
         public const string subject = "Re: [Kafva/Netrix] new comment (#1)";
         public const string tag = "STARRED";
     }

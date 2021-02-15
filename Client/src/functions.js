@@ -51,11 +51,30 @@ const getDate = (date) => date.replace("T", " ").replace(/\+\d+:\d+/, "");
 const getSelected = (selector) =>
 {
   let el = document.querySelector(selector);
-  let index = el.selectedIndex;
   
-  return el.length > index && index >= 0 ? 
-    el[index].innerHTML.replace(/[\n\s]*/g,"") : 
-    CONFIG.unknown; 
+  if(el)
+  {
+    let index = el.selectedIndex;
+    
+    return el.length > index && index >= 0 ? 
+      el[index].innerHTML.replace(/[\n\s]*/g,"") : 
+      CONFIG.unknown; 
+  }
+  else { return CONFIG.unknown; }
 }
 
-export{ collapseCSS, enlargeCSS, toggleLoadingWheel, manageTagOfThread, getDate, getSelected};
+const waitForAccount = async () =>
+{
+  let account = CONFIG.unknown;
+  
+  while( (account = getSelected(CONFIG.accountSelector)) == CONFIG.unknown  )
+  // Wait until the Bar sets the account
+  {
+      console.log("Waiting for account...");
+      await new Promise(r => setTimeout(r, CONFIG.waitDelayMs));
+  }
+  
+  return account;
+}
+
+export{ collapseCSS, enlargeCSS, toggleLoadingWheel, manageTagOfThread, getDate, getSelected, waitForAccount};

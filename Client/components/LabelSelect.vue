@@ -8,17 +8,20 @@
 
 <script>
 import {CONFIG} from '../src/config.js'
+import * as Functions  from '../src/functions.js';
 
 export default {
     name: 'label-select',
     props: {},
     data: function() {
         return {
-            labels: CONFIG.labels,
+            labels: [],
             selected: CONFIG.defaultLabel
         };
     },
-    
+   
+    created(){ this.fetchLabels(); },
+
     methods:
     {
         emitEmailTableEvent()
@@ -26,6 +29,25 @@ export default {
         // label has changed and that it should reload 
         {
           this.$root.$emit(CONFIG.reloadInboxEvent, "",  this.selected);
+        },
+        
+        fetchLabels: async function()
+        {
+          let res = await fetch(`/${await Functions.waitForAccount(CONFIG.accountSelector)}/labels`, {
+            method: "GET",
+          });
+          
+          let body = null;
+          try 
+          { 
+            body = await res.text();
+            
+            // Decode from base64 and then translate \u sequences into actual
+            // glyphs with JSON.parse()
+            this.labels = JSON.parse(atob(body));
+          }
+          catch (e) { console.error(e); }
+
         }
     }
 }

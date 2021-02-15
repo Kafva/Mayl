@@ -84,7 +84,7 @@ export default {
         {
             Functions.toggleLoadingWheel(true);
             
-            let res = await fetch(`/${await this.waitForAccount()}/mail?label=${this.label}`, {
+            let res = await fetch(`/${await Functions.waitForAccount()}/mail?label=${this.label}`, {
                 method: "GET",
             });
             
@@ -121,20 +121,6 @@ export default {
                 return  d2 - d1;  
             });
         },
-
-        waitForAccount: async function()
-        {
-            let account = CONFIG.unknown;
-            
-            while( (account = Functions.getSelected(CONFIG.accountSelector)) == CONFIG.unknown  )
-            // Wait until the Bar sets the account
-            {
-                console.log("Waiting for account...");
-                await new Promise(r => setTimeout(r, CONFIG.waitDelayMs));
-            }
-            
-            return account;
-        }
     }
 }
 </script>

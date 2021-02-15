@@ -82,7 +82,7 @@ namespace Gmail
         {
             this.userId = userId;
             
-            // Open a browser session to authenticate with the app if no tokens.json 
+            // Open a browser session to authenticate with the app if no secret/<...>_token 
             // directory exists for the provided userId
             try { this.setupCredentials(); }
             catch (Exception e) 

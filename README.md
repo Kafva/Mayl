@@ -39,11 +39,8 @@ Next, create the file `secret/certificate.json` with the following content
 ```
 
 ## Run the app
-If you do not use nvm a slight modification to `./scripts/genDist.sh` will be required
-
 ```bash
 # Install dependencies for the client
-nvm use node
 npm install
 
 # Build and start the server

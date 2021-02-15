@@ -1,9 +1,9 @@
 <template>
     <table>
         <thead>
-            <th class="nf nf-mdi-mail_ru"      ></th>
-            <th class="nf nf-mdi-view_headline"></th>
-            <th class="nf nf-mdi-calendar"       :style="collapseCSS"></th>
+            <th class="nf nf-mdi-mail_ru"   :style="enlargeCSS"> </th>
+            <th class="nf nf-fa-envelope_o" :style="enlargeCSS"> </th>
+            <th class="nf nf-mdi-calendar"  :style="collapseCSS"></th>
             <th></th>
             <th></th>
         </thead>
@@ -45,7 +45,9 @@ export default {
    
     computed:
     {
-        collapseCSS: function(){ return Functions.collapseCSS(this.minify); }
+        // Returns either 'display: none' or 'display: inline-block'
+        collapseCSS: function(){ return Functions.collapseCSS(this.minify); },
+        enlargeCSS: function() { return Functions.enlargeCSS(this.minify);  }
     },
 
     mounted()
@@ -92,15 +94,34 @@ export default {
                 body = await res.text();
                 
                 // Decode from base64 and then translate \u sequences into actual
-                // glyphs with JSON.parse()
-                this.threads = JSON.parse( atob(body)  );
+                // glyphs with JSON.parse() and sort the resulting threads array by date
+                this.sortThreads(  JSON.parse( atob(body) )  )
+
                 console.log(`Fetched ${this.threads.length} threads`);
             }
             catch (e) { console.error(e); }
 
             Functions.toggleLoadingWheel(false);
         }, 
-        
+       
+        sortThreads: function(threads)
+        {
+            // Sanitise the date for each message
+            threads.forEach( (t,i, threads ) => {
+                threads[i].emails.forEach( (e,j,emails) =>
+                {
+                    emails[j].date = Functions.getDate( emails[j].date );
+                });  
+            });
+
+            // Sort the threads by the date of each ones most recent message
+            this.threads = threads.sort( (e1,e2) => {
+                let d1 = new Date(e1.emails[0].date);
+                let d2 = new Date(e2.emails[0].date);
+                return  d2 - d1;  
+            });
+        },
+
         waitForAccount: async function()
         {
             let account = CONFIG.unknown;
@@ -125,7 +146,7 @@ table
     display: inline-block;
     width: fit-content;
     height: fit-content;
-    text-align: right;
+    text-align: left;
     margin-left: 15px;
     margin-right: 15px;
     padding: 15px;

@@ -1,8 +1,8 @@
 <template>
     <tr :class="rowClassName" @click="emitEmailDisplayEvent">
-        <td>                            {{ sender }}         </td>
-        <td>                            {{ thread.snippet }} </td>
-        <td :style="collapseCSS">       {{ date }}           </td>
+        <td :title="sender"  :style="enlargeCSS">        {{ sender }}   </td>
+        <td :title="subject" :style="enlargeCSS">        {{ subject }}  </td>
+        <td :title="date"    :style="collapseCSS">       {{ date }}     </td>
         <td :class="threadIdClassName" hidden>{{ thread.threadId }}     </td>
         <td @click="untagMessage"   class="btn nf nf-mdi-tag_remove">   </td>
         <td @click="deleteMessage"  class="btn nf nf-fa-trash">         </td>
@@ -41,13 +41,17 @@ export default {
         },
         date: function()
         {
-            let date =  this.thread.emails.length > 0 ? 
+            return this.thread.emails.length > 0 ? 
                 this.thread.emails[0].date : CONFIG.unknown; 
-           
-            return Functions.getDate(date);
+        },
+        subject: function()
+        {
+            return  this.thread.emails.length > 0 ? 
+                this.thread.emails[0].subject : CONFIG.unknown; 
         },
     
-        collapseCSS: function(){ return Functions.collapseCSS(this.minify); }
+        collapseCSS: function(){ return Functions.collapseCSS(this.minify); },
+        enlargeCSS: function() { return Functions.enlargeCSS(this.minify); }
 
     },
     methods:

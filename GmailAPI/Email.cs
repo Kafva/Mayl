@@ -17,7 +17,6 @@ namespace Gmail
             this.sender   = sender;
             this.date     = date;
             this.body     = body;
-            
         }
     }
     

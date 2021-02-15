@@ -19,15 +19,34 @@ This will produce an authentication prompt in your browser which upon successful
 ```
 dotnet run -t <your-account@gmail.com> 
 ```
-If the connection was successful add the account to `./secret/accounts.txt` (newline separated).
+If the connection was successful add the account to `./secret/accounts.txt` (newline separated), the first entry will be used as the default and the default label can be set in `./Client/src/config.js`.
 
 *Note* that to add several accounts it is necessary to sign out from Google after each successful authentication in the browser that receives the prompt.
 
-## Run the app
+## TLS setup
+Create a `server.key` and `server.crt` with `openssl` signed by a trusted CA and generate a `.pfx` file using the command
 ```bash
-# Install nvm if needed
+openssl pkcs12 -export -out secret/server.pfx -inkey server.key -in server.crt
+```
+Next, create the file `secret/certificate.json` with the following content
+```json
+{
+  "certificateSettings": {
+    "fileName": "secret/server.pfx",
+    "password": "<YOUR PASSWORD>"
+  }
+}
+```
+
+## Run the app
+If you do not use nvm a slight modification to `./scripts/genDist.sh` will be required
+
+```bash
+# Install dependencies for the client
 nvm use node
 npm install
+
+# Build and start the server
 dotnet run
 ```
 

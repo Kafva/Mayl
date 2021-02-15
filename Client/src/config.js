@@ -3,7 +3,7 @@ const CONFIG = Object.freeze(
     unknown: "Unknown",
     waitDelayMs: 100,
     
-    defaultLabel: 'STARRED',
+    defaultLabel: 'INBOX',
     // Derived from gmailAPI.getLabels()
     labels: 
     // Note that every thread belongs to exactly 1 category

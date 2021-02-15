@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Gmail
 {
@@ -65,7 +66,7 @@ namespace Gmail
             GmailService.Scope.MailGoogleCom,
         };
         
-        public static readonly string APPLICATION_NAME = "Mayl";
+        public static readonly string APPLICATION_NAME = "mayl";
         private const string UNREAD_LABEL = "UNREAD";
         public const string TRASH_LABEL = "TRASH";
         private const int maxLabelCount = 50;
@@ -276,7 +277,8 @@ namespace Gmail
                 );
             }
 
-            return threadMessages;
+            // Sort messages by date
+            return threadMessages.OrderByDescending( (e) => e.date ).ToArray() ;
         }
         
         public bool addLabelsToThread(string threadId, List<string> labelIds)
@@ -338,8 +340,12 @@ namespace Gmail
             {
                 if (labels.Count == 0)
                 {
-                    labels.AddRange( m.LabelIds );
-                    labels.CopyTo(_labels);
+                    try
+                    {
+                        labels.AddRange( m.LabelIds );
+                        labels.CopyTo(_labels);
+                    }
+                    catch (Exception e) { Console.Error.WriteLine(e); return labels; }
                     continue;
                 }
 
@@ -400,7 +406,7 @@ namespace Gmail
             // Attempt to sanitize the date and parse it
             { 
                 _date = Array.Find( headers, (MessagePartHeader h) => h.Name == "Date" ).Value;
-                _date = Regex.Replace(_date, Regex.Escape("(") + "(UTC|PST|GMT|CET|BST).*" + Regex.Escape(")") + ".*", "");
+                _date = Regex.Replace(_date, Regex.Escape("(") + "([A-Za-z]{2,5}).*" + Regex.Escape(")") + ".*", "");
                 date = DateTime.Parse(_date); 
             }
             catch(Exception e)

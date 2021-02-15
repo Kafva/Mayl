@@ -5,7 +5,7 @@
     <div v-for="message in messages"
         v-bind:key="message.id">
         <div class="emailBody">
-            <p>{{ getDate(message.date) }}</p>
+            <p>{{ message.date }}</p>
             <!-- <div v-html="sanitiseBody(message.body)"></div> -->
             <iframe 
                 id="emailFrame"
@@ -78,6 +78,11 @@ export default {
               // Decode from base64 and then translate \u sequences into actual
               // glyphs with JSON.parse()
               this.messages = JSON.parse(atob(body));
+              
+              // Sanitise the date for each message
+              this.messages.forEach( (t,i, messages ) => {
+                  messages[i].date = Functions.getDate( messages[i].date );
+              });
             }
             catch (e) { console.error(e); }
         },
@@ -101,8 +106,6 @@ export default {
             this.minify = true;
             this.$root.$emit(CONFIG.hideBodiesEvent);
         },
-                
-        getDate(date){  return Functions.getDate(date);  },
     }
 }
 </script>

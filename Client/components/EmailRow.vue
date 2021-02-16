@@ -97,7 +97,7 @@ export default {
 
 .Item:hover
 {
-    background-color: rgba(69, 69, 75, 0.5);
+    background-color: var(--hoverbkg); 
     opacity: 0.5;
     cursor: pointer;
 }

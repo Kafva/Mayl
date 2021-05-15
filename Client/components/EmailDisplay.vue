@@ -87,6 +87,7 @@ export default {
         },
         
         sanitiseBody(body)
+        // Not very exhaustive...
         {
             // Note the use of /g for replace all
             return body.replaceAll(/<style/gi, "<style scoped")

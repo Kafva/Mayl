@@ -1,1 +1,5 @@
-*.min.css      linguist-language=None
+*.min.css       linguist-language=None
+*.min.*		    linguist-language=None
+*.slim.*	    linguist-language=None
+*jquery*	    linguist-language=None
+*bootstrap*	    linguist-language=None

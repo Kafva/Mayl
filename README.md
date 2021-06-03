@@ -11,7 +11,7 @@
 5. Download the credentials and place the file at `./secret/credentials.json`
 
 ## Add Gmail accounts
-This section needs to be performed on a machine with a GUI to interact with browser prompts, if you want to deploy the application on a server copy the contents of the repository after this section and continue from there. Updating which accounts are available and renewing OAuth tokens requires this process to be redone.
+This section needs to be performed on a machine with a GUI to interact with browser prompts, if you want to deploy the application on a server copy the contents of the repository after this section and continue from there. Updating which accounts are available and renewing OAuth tokens requires this process to be redone. You should **NOT** deploy the app publicly since all authentication is performed during this step whereafter your account is available to the server.
 
 Switch to `./RegisterAccount` and execute 
 ```

@@ -32,6 +32,7 @@ namespace Web
                     options =>
                     {
                         options.AddServerHeader = false;
+                        // Switch to 'Any' if deploying outside localhost
                         options.Listen(IPAddress.Loopback, Program.PORT, listenOptions =>
                         {
                             listenOptions.UseHttps(certificate);

@@ -1,0 +1,12 @@
+[Unit]
+Description=Mayl web service
+After=network.target
+
+[Service]
+Type=simple
+User=jonas
+WorkingDirectory=/opt/Mayl
+ExecStart=/opt/dotnet/dotnet run
+
+[Install]
+WantedBy=multi-user.target

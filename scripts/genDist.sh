@@ -5,3 +5,5 @@
 	nvm use node
 }
 npm run build
+
+exit 0
